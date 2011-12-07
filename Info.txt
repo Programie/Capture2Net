@@ -1,7 +1,10 @@
 [b]%INTERNNAME Build %BUILDCOUNT[/b]
 Compiled on Windows 7 Ultimate x64
 
-Written by Programie in PureBasic v4.60 RC 2
+Written by Programie in PureBasic v4.60
+
+
+Latest build available: %LATESTVERSION
 
 
 [b]Todo[/b]

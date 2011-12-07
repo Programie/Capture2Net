@@ -756,6 +756,7 @@ Procedure AddUpload(lImage, lFileNameGadget, lFileFormatGadget)
 		EndIf
 		If bLocked
 			AddGadgetItem(#UploadHistory, -1, GetFilePart(sFilename$) + Chr(10) + FormatSize(FileSize(sFilename$)) + Chr(10) + "Waiting" + Chr(10) + sType$ + Chr(10) + Str(lImageWidth) + " x " + Str(lImageHeight), ImageID(#Icon_Queued))
+			SetGadgetState(#UploadHistory, CountGadgetItems(#UploadHistory) - 1)
 			AddElement(UploadQueue())
 			UploadQueue()\lItem = CountGadgetItems(#UploadHistory) - 1
 			UploadQueue()\sFilename = sFilename$
@@ -786,6 +787,7 @@ Procedure LoadHistory()
 						EndIf
 						*pHistoryItemNode = NextXMLNode(*pHistoryItemNode)
 					Wend
+					SetGadgetState(#UploadHistory, CountGadgetItems(#UploadHistory) - 1)
 				EndIf
 			Else
 				MessageRequester(#Title, "Invalid history file!" + Chr(13) + Chr(13) + "Error: " + XMLError(lXML) + Chr(13) + "Line: " + Str(XMLErrorLine(lXML)) + Chr(13) + Str(XMLErrorPosition(lXML)), #MB_ICONERROR)
@@ -828,6 +830,22 @@ Procedure CheckHistoryUrls(lNull)
 	Next
 EndProcedure
 
+Procedure UpdateInfoText()
+	If eGlobals\lLatestBuild
+		sLatestVersion$ = Str(eGlobals\lLatestBuild)
+	Else
+		sLatestVersion$ = "N/A"
+	EndIf
+	sInfoText$ = PeekS(?Text_Info, ?Text_Todo - ?Text_Info)
+	sInfoText$ = ReplaceString(sInfoText$, "%BUILDCOUNT", Str(#PB_Editor_CompileCount), #PB_String_NoCase)
+	sInfoText$ = ReplaceString(sInfoText$, "%INTERNNAME", #InternName, #PB_String_NoCase)
+	sInfoText$ = ReplaceString(sInfoText$, "%LATESTVERSION", sLatestVersion$, #PB_String_NoCase)
+	sInfoText$ = ReplaceString(sInfoText$, "%LINTERNNAME", LCase(#InternName), #PB_String_NoCase)
+	sInfoText$ = ReplaceString(sInfoText$, "%UINTERNNAME", UCase(#InternName), #PB_String_NoCase)
+	sInfoText$ = ReplaceString(sInfoText$, "%TODO", PeekS(?Text_Todo, ?EOF - ?Text_Todo), #PB_String_NoCase)
+	FormatEditorText(#AboutText, sInfoText$)
+EndProcedure
+
 Procedure Quit()
 	LockMutex(eGlobals\lMutex)
 	lQueueSize = ListSize(UploadQueue())
@@ -852,9 +870,12 @@ EndProcedure
 Procedure CheckUpdate(bAlwaysShowMessage.b, lTryNo = 1)
 	sUpdateInfo$ = HTTPRequest("updates.selfcoders.com", 80, "GET", "/getupdate.php?project=" + LCase(#InternName), #False, "", "", #True)
 	If sUpdateInfo$
-		lBuild = Val(StringField(sUpdateInfo$, 1, Chr(10)))
+		eGlobals\lLatestBuild = Val(StringField(sUpdateInfo$, 1, Chr(10)))
+		If IsGadget(#AboutText)
+			UpdateInfoText()
+		EndIf
 		If lBuild > #PB_Editor_CompileCount
-			If MessageRequester(#Title, "An update is available!" + Chr(13) + Chr(13) + "Installed build: " + Str(#PB_Editor_CompileCount) + Chr(13) + "Available build: " + Str(lBuild) + Chr(13) + Chr(13) + "Do you want to download and install it now?" + Chr(13) + Chr(13) + "Warning: The upload queue will be stopped!", #MB_ICONQUESTION | #MB_YESNO) = #PB_MessageRequester_Yes
+			If MessageRequester(#Title, "An update is available!" + Chr(13) + Chr(13) + "Installed build: " + Str(#PB_Editor_CompileCount) + Chr(13) + "Available build: " + Str(eGlobals\lLatestBuild) + Chr(13) + Chr(13) + "Do you want to download and install it now?" + Chr(13) + Chr(13) + "Warning: The upload queue will be stopped!", #MB_ICONQUESTION | #MB_YESNO) = #PB_MessageRequester_Yes
 				RunProgram(ProgramFilename(), "/update1 " + Chr(34) + StringField(sUpdateInfo$, 2, Chr(10)) + Chr(34), GetPathPart(ProgramFilename()))
 				End
 			EndIf
@@ -974,6 +995,8 @@ Procedure OnError()
 	End
 EndProcedure
 ; IDE Options = PureBasic 4.60 (Windows - x86)
+; CursorPosition = 789
+; FirstLine = 768
 ; Folding = --------
 ; EnableXP
 ; EnableCompileCount = 0

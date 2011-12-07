@@ -15,6 +15,7 @@ Structure eGlobals
 	hAppIcon.l
 	lTaskBarWindowMessage.l
 	lMutex.l
+	lLatestBuild.l
 	sConfigFile.s
 EndStructure
 
@@ -48,6 +49,7 @@ Structure eUploadQueue
 	sFilename.s
 EndStructure
 ; IDE Options = PureBasic 4.60 (Windows - x86)
+; CursorPosition = 17
 ; EnableXP
 ; EnableCompileCount = 0
 ; EnableBuildCount = 0

@@ -81,8 +81,12 @@ If OpenWindow(#Window, 100, 100, 960, 530, #Title, #PB_Window_MinimizeGadget | #
 	lToolBarIconSize = lToolBarSize - lToolBarIconSpacing * 2
 	ResizeImage(#Icon_CheckUpdate, lToolBarIconSize, lToolBarIconSize)
 	ResizeImage(#Icon_Save, lToolBarIconSize, lToolBarIconSize)
-	ImageGadget(#ToolBar_Save, lToolBarIconSpacing, lToolBarIconSpacing, lToolBarIconSize, lToolBarIconSize, ImageID(#Icon_Save))
-	ImageGadget(#ToolBar_CheckUpdate, lToolBarIconSpacing * 2 + lToolBarIconSize, lToolBarIconSpacing, lToolBarIconSize, lToolBarIconSize, ImageID(#Icon_CheckUpdate))
+	CanvasGadget(#ToolBar_Save, lToolBarIconSpacing, lToolBarIconSpacing, lToolBarIconSize, lToolBarIconSize)
+	SetGadgetAttribute(#ToolBar_Save, #PB_Canvas_Image, ImageID(#Icon_Save))
+	SetGadgetAttribute(#ToolBar_Save, #PB_Canvas_Cursor, #PB_Cursor_Hand)
+	CanvasGadget(#ToolBar_CheckUpdate, lToolBarIconSpacing * 2 + lToolBarIconSize, lToolBarIconSpacing, lToolBarIconSize, lToolBarIconSize)
+	SetGadgetAttribute(#ToolBar_CheckUpdate, #PB_Canvas_Image, ImageID(#Icon_CheckUpdate))
+	SetGadgetAttribute(#ToolBar_CheckUpdate, #PB_Canvas_Cursor, #PB_Cursor_Hand)
 	GadgetToolTip(#ToolBar_Save, "Save")
 	GadgetToolTip(#ToolBar_CheckUpdate, "Check for updates")
 	PanelGadget(#Panel, 0, lToolBarSize, WindowWidth(#Window), WindowHeight(#Window) - lToolBarSize)
@@ -168,13 +172,7 @@ If OpenWindow(#Window, 100, 100, 960, 530, #Title, #PB_Window_MinimizeGadget | #
 	EditorGadget(#AboutText, 10, 10, 0, 0, #PB_Editor_ReadOnly)
 	SendMessage_(GadgetID(#AboutText), #EM_SETEVENTMASK, 0, #ENM_LINK | SendMessage_(GadgetID(#AboutText), #EM_GETEVENTMASK, 0, 0))
 	SendMessage_(GadgetID(#AboutText), #EM_AUTOURLDETECT, #True, 0)
-	sInfoText$ = PeekS(?Text_Info, ?Text_Todo - ?Text_Info)
-	sInfoText$ = ReplaceString(sInfoText$, "%BUILDCOUNT", Str(#PB_Editor_CompileCount), #PB_String_NoCase)
-	sInfoText$ = ReplaceString(sInfoText$, "%INTERNNAME", #InternName, #PB_String_NoCase)
-	sInfoText$ = ReplaceString(sInfoText$, "%LINTERNNAME", LCase(#InternName), #PB_String_NoCase)
-	sInfoText$ = ReplaceString(sInfoText$, "%UINTERNNAME", UCase(#InternName), #PB_String_NoCase)
-	sInfoText$ = ReplaceString(sInfoText$, "%TODO", PeekS(?Text_Todo, ?EOF - ?Text_Todo), #PB_String_NoCase)
-	FormatEditorText(#AboutText, sInfoText$)
+	UpdateInfoText()
 	CloseGadgetList()
 	lState = SwapValue(GetGadgetState(#WebDAV_AuthRequired))
 	DisableGadget(#WebDAV_Text3, lState)
@@ -290,14 +288,14 @@ If OpenWindow(#Window, 100, 100, 960, 530, #Title, #PB_Window_MinimizeGadget | #
 	RemoveSysTrayIconEx(WindowID(#Window), #Tray)
 EndIf
 ; IDE Options = PureBasic 4.60 (Windows - x86)
-; CursorPosition = 12
+; CursorPosition = 74
+; FirstLine = 69
 ; EnableXP
 ; EnableOnError
 ; UseIcon = Capture2Net.ico
 ; Executable = Capture2Net.exe
-; CommandLine = /nochangelog
-; EnableCompileCount = 775
-; EnableBuildCount = 69
+; EnableCompileCount = 782
+; EnableBuildCount = 72
 ; EnableExeConstant
 ; IncludeVersionInfo
 ; VersionField0 = 1,0,0,0
