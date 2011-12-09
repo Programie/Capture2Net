@@ -532,8 +532,11 @@ Procedure.s MakeFileName(lFileNameGadget, lFileFormatGadget)
 	sString$ = ReplaceString(sString$, "%H", sHostname$)
 	sString$ = ReplaceString(sString$, "%U", sUsername$)
 	sString$ = ReplaceString(sString$, " %% ", "%")
+	For lAscii = 32 To 44
+		sString$ = ReplaceString(sString$, Chr(lAscii), "%" + Str(lAscii))
+	Next
 	For lAscii = 0 To 255
-		If (lAscii >= 32 And lAscii <= 46) Or (lAscii >= 48 And lAscii <= 57) Or (lAscii >= 65 And lAscii <= 90) Or lAscii = 95 Or (lAscii >= 97 And lAscii <= 122)
+		If lAscii = 45 Or lAscii = 46 Or (lAscii >= 48 And lAscii <= 57) Or (lAscii >= 65 And lAscii <= 90) Or lAscii = 95 Or (lAscii >= 97 And lAscii <= 122)
 			; OK
 		Else
 			sString$ = ReplaceString(sString$, Chr(lAscii), "_")
@@ -995,8 +998,6 @@ Procedure OnError()
 	End
 EndProcedure
 ; IDE Options = PureBasic 4.60 (Windows - x86)
-; CursorPosition = 789
-; FirstLine = 768
 ; Folding = --------
 ; EnableXP
 ; EnableCompileCount = 0

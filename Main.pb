@@ -255,7 +255,17 @@ If OpenWindow(#Window, 100, 100, 960, 530, #Title, #PB_Window_MinimizeGadget | #
 											Case #RectangleSelection_Close
 												bRectDone = #True
 											Case #RectangleSelection_OK
-												AddUpload(GrabImage(lImage, #PB_Any, lStartX, lStartY, Abs(lEndX - lStartX), Abs(lEndY - lStartY)), #FileName_Selection, #FileFormat_Selection)
+												If lStartX < lEndX
+													lImageX = lStartX
+												Else
+													lImageX = lEndX
+												EndIf
+												If lStartY < lEndY
+													lImageY = lStartY
+												Else
+													lImageY = lEndY
+												EndIf
+												AddUpload(GrabImage(lImage, #PB_Any, lImageX, lImageY, Abs(lEndX - lStartX), Abs(lEndY - lStartY)), #FileName_Selection, #FileFormat_Selection)
 												bRectDone = #True
 										EndSelect
 								EndSelect
@@ -288,14 +298,12 @@ If OpenWindow(#Window, 100, 100, 960, 530, #Title, #PB_Window_MinimizeGadget | #
 	RemoveSysTrayIconEx(WindowID(#Window), #Tray)
 EndIf
 ; IDE Options = PureBasic 4.60 (Windows - x86)
-; CursorPosition = 74
-; FirstLine = 69
 ; EnableXP
 ; EnableOnError
 ; UseIcon = Capture2Net.ico
 ; Executable = Capture2Net.exe
-; EnableCompileCount = 782
-; EnableBuildCount = 72
+; EnableCompileCount = 785
+; EnableBuildCount = 75
 ; EnableExeConstant
 ; IncludeVersionInfo
 ; VersionField0 = 1,0,0,0
