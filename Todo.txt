@@ -1,5 +1,6 @@
 [b][BUG][/b] Some shortcuts were not visible in ShortcutGadget (i.e. the print key)
 
+[b][FEATURE][/b] Read change log from http://updates.selfcoders.com/changelog.php?project=capture2net&xml and display
 [b][FEATURE][/b] Changeable shortcuts
 [b][FEATURE][/b] Change tray icon while uploading
 [b][FEATURE][/b] Click on popup in tray -> Open url in browser
