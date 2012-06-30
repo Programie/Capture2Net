@@ -564,6 +564,7 @@ EndProcedure
 Procedure HideWindowEx(bState.b)
 	HideWindow(#Window, bState)
 	If Not bState
+		SetForegroundWindow_(WindowID(#Window))
 		SetActiveWindow_(WindowID(#Window))
 		UpdateUrlPreview()
 	EndIf

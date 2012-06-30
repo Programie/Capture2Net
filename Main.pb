@@ -302,8 +302,8 @@ EndIf
 ; EnableOnError
 ; UseIcon = Capture2Net.ico
 ; Executable = Capture2Net.exe
-; EnableCompileCount = 785
-; EnableBuildCount = 75
+; EnableCompileCount = 787
+; EnableBuildCount = 76
 ; EnableExeConstant
 ; IncludeVersionInfo
 ; VersionField0 = 1,0,0,0
