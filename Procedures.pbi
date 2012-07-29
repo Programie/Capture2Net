@@ -648,6 +648,7 @@ Procedure UploadQueueThread(lNull)
 			sUrl$ = URLEncoder(GetGadgetText(#WebDAV_AccessPath) + GetFilePart(sFilename$))
 			sResponseCode$ = HTTPRequest(GetGadgetText(#WebDAV_Server), Val(GetGadgetText(#WebDAV_Port)), "PUT", URLEncoder(GetGadgetText(#WebDAV_Path) + GetFilePart(sFilename$)), GetGadgetState(#WebDAV_AuthRequired), sFilename$, "", #False, lItem)
 			If GetGadgetState(#OtherSettings_ShortUrl)
+				sShortUrl$ = ""
 				Select GetGadgetState(#OtherSettings_ShortUrlProvider)
 					Case #ShortUrlProvider_Sh0rtAt
 						sReturnData$ = HTTPRequest("sh0rt.at", 80, "POST", "/add", #False, "url=" + sUrl$, "", #True)
@@ -663,6 +664,8 @@ Procedure UploadQueueThread(lNull)
 				Else
 					sShortUrl$ = ""
 				EndIf
+			Else
+				sShortUrl$ = ""
 			EndIf
 			lHTTPCode = Val(sResponseCode$)
 			LockMutex(eGlobals\lMutex)
