@@ -28,7 +28,7 @@ Macro Macro_Events_Gadget
 						EndIf
 					EndIf
 				Next
-				SaveConfig()
+				saveOK = SaveConfig()
 				Select GetGadgetState(#OtherSettings_StartWithWindows)
 					Case -1; 3rd state
 					Case 0
@@ -36,6 +36,11 @@ Macro Macro_Events_Gadget
 					Case 1
 						SetRegValue(#HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Run", #InternName, Chr(34) + ProgramFilename() + Chr(34))
 				EndSelect
+				If saveOK
+					MessageRequester(#Title, "Save OK", #MB_ICONINFORMATION)
+				Else
+					MessageRequester(#Title, "Save failed!" + Chr(13) + Chr(13) + "Check write permissions on file '" + eGlobals\sConfigFile + "'.", #MB_ICONERROR)
+				EndIf
 			EndIf
 		Case #ToolBar_CheckUpdate
 			If EventType() = #PB_EventType_LeftClick
@@ -122,28 +127,15 @@ Macro Macro_Events_Gadget
 			LockMutex(eGlobals\lMutex)
 			lQueueSize = ListSize(UploadQueue())
 			UnlockMutex(eGlobals\lMutex)
-			If lQueueSize
-				MessageRequester(#Title, "The upload queue must be empty to check the urls!" + Chr(13) + "Wait to finish all uploads and try again.", #MB_ICONERROR)
+			If eGlobals\lHistoryCheckThreadID And IsThread(eGlobals\lHistoryCheckThreadID)
+				eGlobals\bStopCheckHistoryUrls = #True
+				SetGadgetText(#History_CheckUrls, "Stopping...")
 			Else
-				lThreadID = CreateThread(@CheckHistoryUrls(), #Null)
-				If OpenWindow(#CheckHistoryUrls_Window, 100, 100, 500, 80, "", #PB_Window_BorderLess | #PB_Window_WindowCentered, WindowID(#Window))
-					TextGadget(#CheckHistoryUrls_Text, 10, 10, 480, 20, "", #PB_Text_Center)
-					ProgressBarGadget(#CheckHistoryUrls_Progress, 10, 40, 370, 30, 0, 0, #PB_ProgressBar_Smooth)
-					ButtonGadget(#CheckHistoryUrls_Stop, 390, 40, 100, 30, "Stop")
-					DisableWindow(#Window, #True)
-					eGlobals\bStopCheckHistoryUrls = #False
-					Repeat
-						Select WaitWindowEvent(100)
-							Case #PB_Event_Gadget
-								Select EventGadget()
-									Case #CheckHistoryUrls_Stop
-										eGlobals\bStopCheckHistoryUrls = #True
-										SetGadgetText(#CheckHistoryUrls_Stop, "Stopping...")
-								EndSelect
-						EndSelect
-					Until Not IsThread(lThreadID)
-					DisableWindow(#Window, #False)
-					CloseWindow(#CheckHistoryUrls_Window)
+				If lQueueSize
+					MessageRequester(#Title, "The upload queue must be empty to check the urls!" + Chr(13) + "Wait to finish all uploads and try again.", #MB_ICONERROR)
+				Else
+					SetGadgetText(#History_CheckUrls, "Stop Check")
+					eGlobals\lHistoryCheckThreadID = CreateThread(@CheckHistoryUrls(), #Null)
 				EndIf
 			EndIf
 		Case #WebDAV_AuthRequired
@@ -271,12 +263,13 @@ EndMacro
 
 Macro Macro_Events_SizeWindow
 	If EventWindow() = #Window
-		ResizeGadget(#Panel, #PB_Ignore, #PB_Ignore, WindowWidth(#Window), WindowHeight(#Window) - 32)
+		ResizeGadget(#Panel, #PB_Ignore, #PB_Ignore, WindowWidth(#Window), WindowHeight(#Window) - 42)
 		ResizeGadget(#History_File, #PB_Ignore, #PB_Ignore, GetGadgetAttribute(#Panel, #PB_Panel_ItemWidth) - 240, #PB_Ignore)
 		ResizeGadget(#History_SelectFile, GadgetWidth(#History_File) + 90, #PB_Ignore, #PB_Ignore, #PB_Ignore)
 		ResizeGadget(#History_CheckUrls, GadgetWidth(#History_File) + 150, #PB_Ignore, #PB_Ignore, #PB_Ignore)
 		ResizeGadget(#UploadHistory, #PB_Ignore, #PB_Ignore, GetGadgetAttribute(#Panel, #PB_Panel_ItemWidth), GetGadgetAttribute(#Panel, #PB_Panel_ItemHeight) - 40)
 		ResizeGadget(#AboutText, #PB_Ignore, #PB_Ignore, GetGadgetAttribute(#Panel, #PB_Panel_ItemWidth) - 20, GetGadgetAttribute(#Panel, #PB_Panel_ItemHeight) - 20)
+		ResizeGadget(#ProgressBar, #PB_Ignore, WindowHeight(#Window) - 10, WindowWidth(#Window), #PB_Ignore)
 	EndIf
 EndMacro
 ; IDE Options = PureBasic 4.60 (Windows - x86)

@@ -1,4 +1,5 @@
 [b][BUG][/b] Some shortcuts were not visible in ShortcutGadget (i.e. the print key)
+[b][BUG][/b] If there is already another window opened which has "Capture2Net" as the title, Capture2Net does not start
 
 [b][FEATURE][/b] Read change log from http://updates.selfcoders.com/changelog.php?project=capture2net&xml and display
 [b][FEATURE][/b] Changeable shortcuts

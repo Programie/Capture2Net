@@ -89,7 +89,7 @@ If OpenWindow(#Window, 100, 100, 960, 530, #Title, #PB_Window_MinimizeGadget | #
 	SetGadgetAttribute(#ToolBar_CheckUpdate, #PB_Canvas_Cursor, #PB_Cursor_Hand)
 	GadgetToolTip(#ToolBar_Save, "Save")
 	GadgetToolTip(#ToolBar_CheckUpdate, "Check for updates")
-	PanelGadget(#Panel, 0, lToolBarSize, WindowWidth(#Window), WindowHeight(#Window) - lToolBarSize)
+	PanelGadget(#Panel, 0, lToolBarSize, WindowWidth(#Window), WindowHeight(#Window) - lToolBarSize - 10)
 	AddGadgetItem(#Panel, -1, "Upload Queue and History");- Panel - Upload Queue and History
 	CheckBoxGadgetEx(#History_SaveToFile, 10, 10, 70, 20, "Log to file:", "History_SaveToFile", #True)
 	StringGadgetEx(#History_File, 80, 10, 0, 20, "History_File", GetPathPart(ProgramFilename()) + "History.xml", #PB_String_ReadOnly)
@@ -174,6 +174,7 @@ If OpenWindow(#Window, 100, 100, 960, 530, #Title, #PB_Window_MinimizeGadget | #
 	SendMessage_(GadgetID(#AboutText), #EM_AUTOURLDETECT, #True, 0)
 	UpdateInfoText()
 	CloseGadgetList()
+	ProgressBarGadget(#ProgressBar, 0, WindowHeight(#Window) - 10, WindowWidth(#Window), 10, 0, 0, #PB_ProgressBar_Smooth)
 	lState = SwapValue(GetGadgetState(#WebDAV_AuthRequired))
 	DisableGadget(#WebDAV_Text3, lState)
 	DisableGadget(#WebDAV_Text4, lState)
@@ -297,13 +298,15 @@ If OpenWindow(#Window, 100, 100, 960, 530, #Title, #PB_Window_MinimizeGadget | #
 	Until eGlobals\bQuit;- Main loop end
 	RemoveSysTrayIconEx(WindowID(#Window), #Tray)
 EndIf
-; IDE Options = PureBasic 4.60 (Windows - x86)
+; IDE Options = PureBasic 4.61 (Windows - x86)
+; CursorPosition = 103
+; FirstLine = 76
 ; EnableXP
 ; EnableOnError
 ; UseIcon = Capture2Net.ico
 ; Executable = Capture2Net.exe
-; EnableCompileCount = 788
-; EnableBuildCount = 77
+; EnableCompileCount = 797
+; EnableBuildCount = 81
 ; EnableExeConstant
 ; IncludeVersionInfo
 ; VersionField0 = 1,0,0,0

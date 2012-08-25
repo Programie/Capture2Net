@@ -13,6 +13,7 @@ Structure eGlobals
 	bQuit.b
 	bStopCheckHistoryUrls.b
 	hAppIcon.l
+	lHistoryCheckThreadID.l
 	lTaskBarWindowMessage.l
 	lMutex.l
 	lLatestBuild.l
@@ -48,7 +49,7 @@ Structure eUploadQueue
 	lItem.l
 	sFilename.s
 EndStructure
-; IDE Options = PureBasic 4.60 (Windows - x86)
+; IDE Options = PureBasic 4.61 (Windows - x86)
 ; EnableXP
 ; EnableCompileCount = 0
 ; EnableBuildCount = 0

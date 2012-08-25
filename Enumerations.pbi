@@ -94,6 +94,7 @@
 	#OtherSettings_CopyUrl
 	#OtherSettings_AutoCheckUpdates
 	#AboutText
+	#ProgressBar
 	#UploadHistoryPopupMenu
 	#UploadHistoryPopupMenu_OpenUrl
 	#UploadHistoryPopupMenu_OpenShortUrl
@@ -108,10 +109,6 @@
 	#RectangleSelection_Window
 	#RectangleSelection_Close
 	#RectangleSelection_OK
-	#CheckHistoryUrls_Window
-	#CheckHistoryUrls_Text
-	#CheckHistoryUrls_Progress
-	#CheckHistoryUrls_Stop
 	#QRCodeDisplay_Window
 	#QRCodeDisplay_Image
 	#Icon_CheckUpdate
@@ -151,7 +148,7 @@ Enumeration
 	#ShortUrlProvider_Sh0rtAt
 	#ShortUrlProvider_TinyURL
 EndEnumeration
-; IDE Options = PureBasic 4.60 (Windows - x86)
+; IDE Options = PureBasic 4.61 (Windows - x86)
 ; EnableXP
 ; EnableCompileCount = 0
 ; EnableBuildCount = 0

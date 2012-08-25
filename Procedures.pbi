@@ -273,6 +273,7 @@ Procedure OpenConfig()
 			EndIf
 		Until Eof(lFile)
 		CloseFile(lFile)
+		ProcedureReturn #True
 	EndIf
 EndProcedure
 
@@ -289,6 +290,7 @@ Procedure SaveConfig()
 			Next
 		Next
 		CloseFile(lFile)
+		ProcedureReturn #True
 	EndIf
 EndProcedure
 
@@ -642,6 +644,10 @@ Procedure UploadQueueThread(lNull)
 			lItem = UploadQueue()\lItem
 			sFilename$ = UploadQueue()\sFilename
 			SetGadgetItemText(#UploadHistory, lItem, "Uploading...", #UploadHistory_Column_Status)
+			If eGlobals\lHistoryCheckThreadID And IsThread(eGlobals\lHistoryCheckThreadID)
+				eGlobals\bStopCheckHistoryUrls = #True
+				SetGadgetText(#History_CheckUrls, "Stopping...")
+			EndIf
 		EndIf
 		UnlockMutex(eGlobals\lMutex)
 		If sFilename$
@@ -807,16 +813,19 @@ EndProcedure
 Procedure CheckHistoryUrls(lNull)
 	For lItem = 0 To CountGadgetItems(#UploadHistory) - 1
 		SetGadgetItemText(#UploadHistory, lItem, "Waiting for check...", #UploadHistory_Column_Status)
+		If GetGadgetItemColor(#UploadHistory, lItem, #PB_Gadget_BackColor) <> -1
+			SetGadgetItemColor(#UploadHistory, lItem, #PB_Gadget_BackColor, -1, -1)
+		EndIf
 	Next
-	SetGadgetAttribute(#CheckHistoryUrls_Progress, #PB_ProgressBar_Maximum, CountGadgetItems(#UploadHistory))
+	SetGadgetAttribute(#ProgressBar, #PB_ProgressBar_Maximum, CountGadgetItems(#UploadHistory))
 	For lItem = 0 To CountGadgetItems(#UploadHistory) - 1
 		If eGlobals\bStopCheckHistoryUrls
 			Break
 		EndIf
-		SetGadgetText(#CheckHistoryUrls_Text, "Checking Url " + Str(lItem + 1) + " of " + Str(CountGadgetItems(#UploadHistory)) + "...")
-		SetGadgetState(#CheckHistoryUrls_Progress, lItem)
+		SetGadgetState(#ProgressBar, lItem)
 		sUrl$ = GetGadgetItemText(#UploadHistory, lItem, #UploadHistory_Column_Url)
 		If sUrl$
+			SetGadgetItemText(#UploadHistory, lItem, "Checking...", #UploadHistory_Column_Status)
 			lHTTPStatusCode = Val(StringField(StringField(GetHTTPHeader(sUrl$), 1, Chr(10)), 2, " "))
 			If lHTTPStatusCode >= 200 And lHTTPStatusCode <= 299
 				SetGadgetItemColor(#UploadHistory, lItem, #PB_Gadget_BackColor, $00FF00, -1)
@@ -825,7 +834,7 @@ Procedure CheckHistoryUrls(lNull)
 			Else
 				SetGadgetItemColor(#UploadHistory, lItem, #PB_Gadget_BackColor, $0000FF, -1)
 			EndIf
-			SetGadgetItemText(#UploadHistory, lItem, StringField(GetHTTPHeader(sUrl$), 1, Chr(10)) , #UploadHistory_Column_Status)
+			SetGadgetItemText(#UploadHistory, lItem, StringField(GetHTTPHeader(sUrl$), 1, Chr(10)), #UploadHistory_Column_Status)
 		Else
 			SetGadgetItemText(#UploadHistory, lItem, "Check: No Url", #UploadHistory_Column_Status)
 		EndIf
@@ -835,6 +844,9 @@ Procedure CheckHistoryUrls(lNull)
 			SetGadgetItemText(#UploadHistory, lItem, "Done", #UploadHistory_Column_Status)
 		EndIf
 	Next
+	SetGadgetState(#ProgressBar, 0)
+	SetGadgetText(#History_CheckUrls, "Check Urls")
+	eGlobals\bStopCheckHistoryUrls = #False
 EndProcedure
 
 Procedure UpdateInfoText()
@@ -1001,7 +1013,7 @@ Procedure OnError()
 	EndIf
 	End
 EndProcedure
-; IDE Options = PureBasic 4.60 (Windows - x86)
+; IDE Options = PureBasic 4.61 (Windows - x86)
 ; Folding = --------
 ; EnableXP
 ; EnableCompileCount = 0
