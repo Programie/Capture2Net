@@ -83,7 +83,7 @@
   <PropertyGroup />
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>Y:\downloads\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\Libraries\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
