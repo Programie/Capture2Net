@@ -1,0 +1,73 @@
+{
+	"name" : "Capture2Net",
+
+	"include" :
+	[
+		{
+			"path" : "${QOOXDOO_PATH}/tool/data/config/application.json"
+		}
+	],
+
+	"export" :
+	[
+		"api",
+		"api-data",
+		"build",
+		"clean",
+		"distclean",
+		"fix",
+		"info",
+		"inspector",
+		"lint",
+		"migration",
+		"pretty",
+		"profiling",
+		"source",
+		"source-all",
+		"source-hybrid",
+		"simulation-build",
+		"simulation-run",
+		"test",
+		"test-source",
+		"translation"
+	],
+	
+	"default-job" : "source-hybrid",
+
+	"let" :
+	{
+		"APPLICATION" : "capture2net",
+		"QOOXDOO_PATH" : "../qooxdoo",
+		"QXTHEME" : "qx.theme.Indigo",
+		"API_EXCLUDE" :
+		[
+			"qx.test.*",
+			"${APPLICATION}.theme.*",
+			"${APPLICATION}.test.*",
+			"${APPLICATION}.simulation.*"
+		],
+		"LOCALES" :
+		[
+			"en"
+		],
+		"CACHE" : "${TMPDIR}/qx${QOOXDOO_VERSION}/cache",
+		"ROOT" : "."
+	},
+	
+	"jobs":
+	{
+		"build-files" :
+		{
+			"copy-files" :
+			{
+				"files" :
+				[
+					"includes",
+					"getconfig.php",
+					"rpc.php",
+					"upload.php"
+				]
+			}
+		}
+	}
+}

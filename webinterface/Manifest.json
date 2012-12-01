@@ -1,0 +1,33 @@
+{
+	"info" :
+	{
+		"name" : "Capture2Net",
+
+		"summary" : "Capture2Net - Automatically upload screenshots",
+		"description" : "Automatically upload your screenshots with just one shortcut",
+		
+		"homepage" : "http://selfcoders.com/projects/capture2net",
+
+		"license" : "",
+		"authors" :
+		[
+			{
+				"name" : "Michael Wieland (Programie)",
+				"email" : "capture2net@selfcoders.com"
+			}
+		],
+
+		"version" : "trunk",
+		"qooxdoo-versions": ["2.2"]
+	},
+	
+	"provides" :
+	{
+		"namespace" : "capture2net",
+		"encoding" : "utf-8",
+		"class" : "source/class",
+		"resource" : "source/resource",
+		"translation" : "source/translation",
+		"type" : "application"
+	}
+}
