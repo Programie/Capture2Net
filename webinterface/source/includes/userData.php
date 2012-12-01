@@ -35,7 +35,7 @@ function getUserData()
 	Utils::createArrayFromPath($userConfig, array("screenshots", "selection", "shortcut", "windows"), false, true);
 	Utils::createArrayFromPath($userConfig, array("screenshots", "selection", "shortcut", "key"), 44, true);// 44 = PrintScreen
 	Utils::createArrayFromPath($userConfig, array("screenshots", "window", "imageFormat"), "jpg", true);
-	Utils::createArrayFromPath($userConfig, array("screenshots", "window", "fileName"), "%W_%Y-%m-%d_%h-%i-%s", true);
+	Utils::createArrayFromPath($userConfig, array("screenshots", "window", "fileName"), "%Y-%m-%d_%h-%i-%s_%W", true);
 	Utils::createArrayFromPath($userConfig, array("screenshots", "window", "shortcut", "control"), false, true);
 	Utils::createArrayFromPath($userConfig, array("screenshots", "window", "shortcut", "alt"), true, true);
 	Utils::createArrayFromPath($userConfig, array("screenshots", "window", "shortcut", "shift"), false, true);
