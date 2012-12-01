@@ -126,6 +126,12 @@
       <DependentUpon>SelectionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="ShortcutInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShortcutInfo.Designer.cs">
+      <DependentUpon>ShortcutInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="ConfigWindow.resx">
       <DependentUpon>ConfigWindow.cs</DependentUpon>
@@ -142,6 +148,9 @@
     </Compile>
     <EmbeddedResource Include="SelectionForm.resx">
       <DependentUpon>SelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShortcutInfo.resx">
+      <DependentUpon>ShortcutInfo.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Capture2Net_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
@@ -172,7 +181,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Application.ico" />
-    <None Include="Resources\Camera.wav" />
+    <None Include="Resources\Upload.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Camera.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

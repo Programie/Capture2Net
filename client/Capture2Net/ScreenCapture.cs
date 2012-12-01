@@ -95,11 +95,6 @@ namespace Capture2Net
 			return image;
 		}
 
-		public IntPtr GetForegroundWindow()
-		{
-			return User32.GetForegroundWindow();
-		}
-
 		public IntPtr GetDesktopWindow()
 		{
 			return User32.GetDesktopWindow();
@@ -147,8 +142,6 @@ namespace Capture2Net
 
 			[DllImport("user32.dll")]
 			public static extern IntPtr GetDesktopWindow();
-			[DllImport("user32.dll")]
-			public static extern IntPtr GetForegroundWindow();
 			[DllImport("user32.dll")]
 			public static extern IntPtr GetWindowDC(IntPtr hWnd);
 			[DllImport("user32.dll")]

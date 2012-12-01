@@ -40,7 +40,6 @@
 			this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.trayIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.trayIconMenu_Show = new System.Windows.Forms.ToolStripMenuItem();
-			this.trayIconMenu_Separator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.trayIconMenu_Quit = new System.Windows.Forms.ToolStripMenuItem();
 			this.AcceptAllCertificates = new System.Windows.Forms.CheckBox();
 			this.Port = new System.Windows.Forms.NumericUpDown();
@@ -48,6 +47,9 @@
 			this.Username = new System.Windows.Forms.TextBox();
 			this.Path = new System.Windows.Forms.TextBox();
 			this.Hostname = new System.Windows.Forms.TextBox();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.trayIconMenu_ShortcutInfo = new System.Windows.Forms.ToolStripMenuItem();
 			this.trayIconMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Port)).BeginInit();
 			this.SuspendLayout();
@@ -133,28 +135,25 @@
 			// 
 			this.trayIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.trayIconMenu_Show,
-            this.trayIconMenu_Separator1,
+            this.toolStripSeparator1,
+            this.trayIconMenu_ShortcutInfo,
+            this.toolStripSeparator2,
             this.trayIconMenu_Quit});
 			this.trayIconMenu.Name = "trayIconMenu";
-			this.trayIconMenu.Size = new System.Drawing.Size(104, 54);
+			this.trayIconMenu.Size = new System.Drawing.Size(186, 104);
 			// 
 			// trayIconMenu_Show
 			// 
 			this.trayIconMenu_Show.Name = "trayIconMenu_Show";
-			this.trayIconMenu_Show.Size = new System.Drawing.Size(103, 22);
+			this.trayIconMenu_Show.Size = new System.Drawing.Size(185, 22);
 			this.trayIconMenu_Show.Text = "Show";
 			this.trayIconMenu_Show.ToolTipText = "Show the configuration window.";
 			this.trayIconMenu_Show.Click += new System.EventHandler(this.trayIconMenu_Show_Click);
 			// 
-			// trayIconMenu_Separator1
-			// 
-			this.trayIconMenu_Separator1.Name = "trayIconMenu_Separator1";
-			this.trayIconMenu_Separator1.Size = new System.Drawing.Size(100, 6);
-			// 
 			// trayIconMenu_Quit
 			// 
 			this.trayIconMenu_Quit.Name = "trayIconMenu_Quit";
-			this.trayIconMenu_Quit.Size = new System.Drawing.Size(103, 22);
+			this.trayIconMenu_Quit.Size = new System.Drawing.Size(185, 22);
 			this.trayIconMenu_Quit.Text = "Quit";
 			this.trayIconMenu_Quit.Click += new System.EventHandler(this.trayIconMenu_Quit_Click);
 			// 
@@ -231,6 +230,23 @@
 			this.Hostname.TabIndex = 5;
 			this.Hostname.Text = global::Capture2Net.Properties.Settings.Default.hostname;
 			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(182, 6);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
+			// 
+			// trayIconMenu_ShortcutInfo
+			// 
+			this.trayIconMenu_ShortcutInfo.Name = "trayIconMenu_ShortcutInfo";
+			this.trayIconMenu_ShortcutInfo.Size = new System.Drawing.Size(185, 22);
+			this.trayIconMenu_ShortcutInfo.Text = "Shortcut Information";
+			this.trayIconMenu_ShortcutInfo.Click += new System.EventHandler(this.trayIconMenu_ShortcutInfo_Click);
+			// 
 			// ConfigWindow
 			// 
 			this.AcceptButton = this.Save;
@@ -283,8 +299,10 @@
   private System.Windows.Forms.NotifyIcon trayIcon;
   private System.Windows.Forms.ContextMenuStrip trayIconMenu;
   private System.Windows.Forms.ToolStripMenuItem trayIconMenu_Show;
-  private System.Windows.Forms.ToolStripSeparator trayIconMenu_Separator1;
   private System.Windows.Forms.ToolStripMenuItem trayIconMenu_Quit;
+  private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+  private System.Windows.Forms.ToolStripMenuItem trayIconMenu_ShortcutInfo;
+  private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
  }
 }
 

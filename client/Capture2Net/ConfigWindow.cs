@@ -8,9 +8,10 @@ namespace Capture2Net
 {
 	public partial class ConfigWindow : Form
 	{
-		private bool closingFromTrayIconMenu;
-		private ParameterManager parameterManagerInstance;
-		private CloudConfig cloudConfigInstance;
+		bool closingFromTrayIconMenu;
+		ParameterManager parameterManagerInstance;
+		CloudConfig cloudConfigInstance;
+		ShortcutInfo shortcutInfoForm;
 
 		public ConfigWindow(ParameterManager parameterManagerInstance, CloudConfig cloudConfigInstance)
 		{
@@ -35,6 +36,7 @@ namespace Capture2Net
 
 			if (this.cloudConfigInstance.Load())
 			{
+				this.cloudConfigInstance.RegisterGlobalHotkeys();
 				Properties.Settings.Default.Save();
 
 				MessageBox.Show("Configuration saved!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -113,6 +115,18 @@ namespace Capture2Net
 		{
 			Properties.Settings.Default.showHiddenBalloonTip = false;
 			Properties.Settings.Default.Save();
+		}
+
+		private void trayIconMenu_ShortcutInfo_Click(object sender, EventArgs e)
+		{
+			if (this.shortcutInfoForm == null || this.shortcutInfoForm.IsDisposed)
+			{
+				this.shortcutInfoForm = new ShortcutInfo();
+			}
+			this.shortcutInfoForm.ShortcutScreen = string.Join("+", this.cloudConfigInstance.RegisteredShortcutScreen.ToArray());
+			this.shortcutInfoForm.ShortcutSelection = string.Join("+", this.cloudConfigInstance.RegisteredShortcutSelection.ToArray());
+			this.shortcutInfoForm.ShortcutWindow = string.Join("+", this.cloudConfigInstance.RegisteredShortcutWindow.ToArray());
+			this.shortcutInfoForm.Show();
 		}
 	}
 }

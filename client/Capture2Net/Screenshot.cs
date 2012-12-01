@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Media;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -11,51 +14,39 @@ namespace Capture2Net
 {
 	public class Screenshot
 	{
-		private ScreenCapture screenCaptureInstance;
-		private CloudConfig cloudConfigInstance;
-		private string fileExtension;
-		private string tempFile;
-		private ImageFormat imageFormat;
+		ScreenCapture screenCaptureInstance;
+		CloudConfig cloudConfigInstance;
+		Image image;
+		IntPtr activeWindow;
+		NotifyIcon notifyIcon;
+		string screenshotUrl;
 
-		public Screenshot(string fileExtension, CloudConfig cloudConfigInstance)
+		enum ScreenshotType
+		{
+			Screen,
+			Selection,
+			Window
+		}
+
+		[DllImport("user32.dll")]
+		public static extern IntPtr GetForegroundWindow();
+		[DllImport("user32.dll")]
+		public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+		[DllImport("user32.dll")]
+		public static extern int GetWindowTextLength(IntPtr hWnd);
+
+		public Screenshot(CloudConfig cloudConfigInstance)
 		{
 			this.screenCaptureInstance = new ScreenCapture();
 			this.cloudConfigInstance = cloudConfigInstance;
-			this.fileExtension = fileExtension;
-
-			switch (this.fileExtension)
-			{
-				case "bmp":
-					this.imageFormat = ImageFormat.Bmp;
-					break;
-				case "gif":
-					this.imageFormat = ImageFormat.Gif;
-					break;
-				case "png":
-					this.imageFormat = ImageFormat.Png;
-					break;
-				case "jpg":
-					this.imageFormat = ImageFormat.Jpeg;
-					break;
-				case "tif":
-					this.imageFormat = ImageFormat.Tiff;
-					break;
-				default:
-					this.fileExtension = "jpg";
-					this.imageFormat = ImageFormat.Jpeg;
-					break;
-			}
-
-			this.tempFile = System.IO.Path.GetTempFileName();
+			this.activeWindow = GetForegroundWindow();
 		}
 
 		// Screenshot of whole screen
 		public void Screen()
 		{
-			var image = this.screenCaptureInstance.Capture();
-			image.Save(this.tempFile, this.imageFormat);
-
-			this.PostProcess();
+			this.image = this.screenCaptureInstance.Capture();
+			this.PostProcess(ScreenshotType.Screen);
 		}
 
 		// Allow to select the area
@@ -67,27 +58,53 @@ namespace Capture2Net
 			if (selectionForm.accepted)
 			{
 				var bitmap = new Bitmap(image);
-				var bitmapCrop = bitmap.Clone(selectionForm.cropArea, bitmap.PixelFormat);
-				bitmapCrop.Save(this.tempFile, this.imageFormat);
-				this.PostProcess();
+				this.image = bitmap.Clone(selectionForm.cropArea, bitmap.PixelFormat);
+				this.PostProcess(ScreenshotType.Selection);
 			}
 		}
 
 		// Screenshot of current active window
 		public void Window()
 		{
-			var image = this.screenCaptureInstance.Capture(this.screenCaptureInstance.GetForegroundWindow());
-			image.Save(this.tempFile, this.imageFormat);
-
-			this.PostProcess();
+			this.image = this.screenCaptureInstance.Capture(this.activeWindow);
+			this.PostProcess(ScreenshotType.Window);
 		}
 
-		private void PostProcess()
+		private void PostProcess(ScreenshotType type)
 		{
-			if (Properties.Settings.Default.playSound)
+			new SoundPlayer(Properties.Resources.CameraSound).PlaySync();
+			this.notifyIcon = new NotifyIcon();
+			this.notifyIcon.Icon = Properties.Resources.UploadIcon;
+			this.notifyIcon.Text = "Uploading screenshot...";
+			this.notifyIcon.Visible = true;
+			this.cloudConfigInstance.Load();
+			var tempFile = System.IO.Path.GetTempFileName();
+			var jsonData = this.cloudConfigInstance.jsonData["screenshots"][type.ToString().ToLower()];
+			var fileExtension = jsonData["imageFormat"].ToString().ToLower();
+			ImageFormat imageFormat;
+			switch (fileExtension)
 			{
-				new SoundPlayer(Properties.Resources.Camera).Play();
+				case "bmp":
+					imageFormat = ImageFormat.Bmp;
+					break;
+				case "gif":
+					imageFormat = ImageFormat.Gif;
+					break;
+				case "png":
+					imageFormat = ImageFormat.Png;
+					break;
+				case "jpg":
+					imageFormat = ImageFormat.Jpeg;
+					break;
+				case "tif":
+					imageFormat = ImageFormat.Tiff;
+					break;
+				default:
+					fileExtension = "jpg";
+					imageFormat = ImageFormat.Jpeg;
+					break;
 			}
+			this.image.Save(tempFile, imageFormat);
 			if (Properties.Settings.Default.acceptAllCertificates)
 			{
 				ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(this.AcceptAllCertifications);
@@ -95,7 +112,7 @@ namespace Capture2Net
 			try
 			{
 				// Initialization
-				var fileStream = new FileStream(this.tempFile, FileMode.Open);
+				var fileStream = new FileStream(tempFile, FileMode.Open);
 				var uri = new Uri(Properties.Settings.Default.protocol.ToLower() + "://" + Properties.Settings.Default.hostname + ":" + Properties.Settings.Default.port + Utils.GetValidPath(Properties.Settings.Default.path));
 				var webRequest = (HttpWebRequest)WebRequest.Create(uri);
 
@@ -117,13 +134,26 @@ namespace Capture2Net
 					dataStream.Write(buffer, 0, buffer.Length);
 					bytesRead = fileStream.Read(buffer, 0, buffer.Length);
 				}
-			
+
+				// Write info data block
+				List<string> infoDataList = new List<string>();
+
+				var activeWindowTitle = new StringBuilder(GetWindowTextLength(this.activeWindow) + 1);// Length of window title + 1 for the null character
+				GetWindowText(this.activeWindow, activeWindowTitle, activeWindowTitle.Capacity);
+
+				infoDataList.Add("\tINFODATA\t");// Code to identify the start of the info data block (Must contain characters which are never used in the info data)
+				infoDataList.Add("screenshotType=" + type.ToString().ToLower());// Screenshot type
+				infoDataList.Add("fileExtension=" + fileExtension);// Image type
+				infoDataList.Add("activeWindow=" + activeWindowTitle);// Title of the current active window
+				infoDataList.Add("userName=" + System.Security.Principal.WindowsIdentity.GetCurrent().Name);// Username of current logged in user (Windows user)
+				infoDataList.Add("hostName=" + Dns.GetHostName());// Hostname of this computer
+
+				var infoData = ASCIIEncoding.ASCII.GetBytes(string.Join("\n", infoDataList.ToArray()));
+				dataStream.Write(infoData, 0, infoData.Length);
+
 				// Close streams
 				dataStream.Close();
 				fileStream.Close();
-
-				// Remove temporary file
-				File.Delete(this.tempFile);
 
 				var response = (HttpWebResponse)webRequest.GetResponse();
 				if (response.StatusCode == HttpStatusCode.OK)
@@ -136,10 +166,14 @@ namespace Capture2Net
 					readStream.Close();
 					responseStream.Close();
 
-					if (responseText.Substring(0, 7) == "http://" || responseText.Substring(0, 8) == "https://")
+					if (responseText.Length > 8 && (responseText.Substring(0, 7) == "http://" || responseText.Substring(0, 8) == "https://"))
 					{
-						Clipboard.SetText(responseText);
-						// TODO: Notify user about complete upload
+						this.screenshotUrl = responseText;
+						Clipboard.SetText(this.screenshotUrl);
+						this.notifyIcon.BalloonTipClicked += new EventHandler(this.OpenUrlInBrowser);
+						this.notifyIcon.ShowBalloonTip(5000, "Screenshot Upload", "Upload complete", ToolTipIcon.Info);
+						this.notifyIcon.BalloonTipClosed += new EventHandler(this.BalloonTipClosed);
+						Application.Run();
 					}
 					else
 					{
@@ -148,18 +182,37 @@ namespace Capture2Net
 				}
 				else
 				{
-					MessageBox.Show("Server returned status " + response.StatusCode.ToString() + " (" + response.StatusDescription + ")");
+					MessageBox.Show("Server returned status " + response.StatusCode.ToString() + " (" + response.StatusDescription + ")", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
 			catch (WebException exception)
 			{
 				MessageBox.Show(exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
+			
+			// Try to remove temporary file
+			File.Delete(tempFile);
+			
+			// Remove notification icon
+			notifyIcon.Dispose();
 		}
 
 		private bool AcceptAllCertifications(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
 		{
 			return true;
+		}
+
+		private void OpenUrlInBrowser(object sender, EventArgs e)
+		{
+			Process.Start(this.screenshotUrl);
+			this.notifyIcon.Dispose();
+			Application.Exit();
+		}
+
+		private void BalloonTipClosed(object sender, EventArgs e)
+		{
+			this.notifyIcon.Dispose();
+			Application.Exit();
 		}
 	}
 }

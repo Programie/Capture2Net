@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -16,6 +17,33 @@ namespace Capture2Net
 		Hotkey shortcutSelection;
 		Hotkey shortcutWindow;
 		bool hotkeysRegistered;
+		List<string> registeredShortcutScreen;
+		List<string> registeredShortcutSelection;
+		List<string> registeredShortcutWindow;
+
+		public List<string> RegisteredShortcutScreen
+		{
+			get
+			{
+				return this.registeredShortcutScreen;
+			}
+		}
+
+		public List<string> RegisteredShortcutSelection
+		{
+			get
+			{
+				return this.registeredShortcutSelection;
+			}
+		}
+
+		public List<string> RegisteredShortcutWindow
+		{
+			get
+			{
+				return this.registeredShortcutWindow;
+			}
+		}
 
 		public bool Load()
 		{
@@ -44,7 +72,6 @@ namespace Capture2Net
 					var responseStream = response.GetResponseStream();
 					var readStream = new StreamReader(responseStream);
 					this.jsonData = JObject.Parse(readStream.ReadToEnd());
-					this.RegisterGlobalHotkeys();
 					return true;
 				}
 			}
@@ -77,16 +104,42 @@ namespace Capture2Net
 
 		public void RegisterGlobalHotkeys()
 		{
+			registeredShortcutScreen = new List<string>();
+			registeredShortcutSelection = new List<string>();
+			registeredShortcutWindow = new List<string>();
 			if (hotkeysRegistered)
 			{
-				Console.WriteLine("Try unregister");
 				this.shortcutScreen.UnregisterShortcut();
 				this.shortcutSelection.UnregisterShortcut();
 				this.shortcutWindow.UnregisterShortcut();
 			}
 			try
 			{
-				this.shortcutScreen = new Hotkey(100, Keys.PrintScreen, Hotkey.KeyModifiers.None, new System.EventHandler(this.ShortcutScreen));
+				var jsonObject = this.jsonData["screenshots"]["screen"]["shortcut"];
+				var key = (Keys)System.Convert.ToInt32(jsonObject["key"].ToString());
+				int keyModifiers = (int)Hotkey.KeyModifiers.None;
+				if ((bool)jsonObject["control"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Control;
+					this.registeredShortcutScreen.Add("Ctrl");
+				}
+				if ((bool)jsonObject["alt"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Alt;
+					this.registeredShortcutScreen.Add("Alt");
+				}
+				if ((bool)jsonObject["shift"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Shift;
+					this.registeredShortcutScreen.Add("Shift");
+				}
+				if ((bool)jsonObject["windows"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Windows;
+					this.registeredShortcutScreen.Add("Windows");
+				}
+				this.registeredShortcutScreen.Add(((Keys)key).ToString());
+				this.shortcutScreen = new Hotkey(100, key, (Hotkey.KeyModifiers)keyModifiers, new System.EventHandler(this.ShortcutScreen));
 			}
 			catch (ApplicationException)
 			{
@@ -94,7 +147,31 @@ namespace Capture2Net
 			}
 			try
 			{
-				this.shortcutSelection = new Hotkey(101, Keys.PrintScreen, Hotkey.KeyModifiers.Control, new System.EventHandler(this.ShortcutSelection));
+				var jsonObject = this.jsonData["screenshots"]["selection"]["shortcut"];
+				var key = (Keys)System.Convert.ToInt32(jsonObject["key"].ToString());
+				int keyModifiers = (int)Hotkey.KeyModifiers.None;
+				if ((bool)jsonObject["control"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Control;
+					this.registeredShortcutSelection.Add("Ctrl");
+				}
+				if ((bool)jsonObject["alt"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Alt;
+					this.registeredShortcutSelection.Add("Alt");
+				}
+				if ((bool)jsonObject["shift"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Shift;
+					this.registeredShortcutSelection.Add("Shift");
+				}
+				if ((bool)jsonObject["windows"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Windows;
+					this.registeredShortcutSelection.Add("Windows");
+				}
+				this.registeredShortcutSelection.Add(((Keys)key).ToString());
+				this.shortcutSelection = new Hotkey(101, key, (Hotkey.KeyModifiers)keyModifiers, new System.EventHandler(this.ShortcutSelection));
 			}
 			catch (ApplicationException)
 			{
@@ -102,7 +179,31 @@ namespace Capture2Net
 			}
 			try
 			{
-				this.shortcutWindow = new Hotkey(102, Keys.PrintScreen, Hotkey.KeyModifiers.Alt, new System.EventHandler(this.ShortcutWindow));
+				var jsonObject = this.jsonData["screenshots"]["window"]["shortcut"];
+				var key = (Keys)System.Convert.ToInt32(jsonObject["key"].ToString());
+				int keyModifiers = (int)Hotkey.KeyModifiers.None;
+				if ((bool)jsonObject["control"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Control;
+					this.registeredShortcutWindow.Add("Ctrl");
+				}
+				if ((bool)jsonObject["alt"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Alt;
+					this.registeredShortcutWindow.Add("Alt");
+				}
+				if ((bool)jsonObject["shift"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Shift;
+					this.registeredShortcutWindow.Add("Shift");
+				}
+				if ((bool)jsonObject["windows"])
+				{
+					keyModifiers += (int)Hotkey.KeyModifiers.Windows;
+					this.registeredShortcutWindow.Add("Windows");
+				}
+				this.registeredShortcutWindow.Add(((Keys)key).ToString());
+				this.shortcutWindow = new Hotkey(102, key, (Hotkey.KeyModifiers)keyModifiers, new System.EventHandler(this.ShortcutWindow));
 			}
 			catch (ApplicationException)
 			{

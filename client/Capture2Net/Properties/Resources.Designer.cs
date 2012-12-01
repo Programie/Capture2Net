@@ -63,9 +63,19 @@ namespace Capture2Net.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
         /// </summary>
-        internal static System.IO.UnmanagedMemoryStream Camera {
+        internal static System.IO.UnmanagedMemoryStream CameraSound {
             get {
-                return ResourceManager.GetStream("Camera", resourceCulture);
+                return ResourceManager.GetStream("CameraSound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon UploadIcon {
+            get {
+                object obj = ResourceManager.GetObject("UploadIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

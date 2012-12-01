@@ -29,7 +29,10 @@ namespace Capture2Net
 				}
 				else
 				{
-					cloudConfigInstance.Load();
+					if (cloudConfigInstance.Load())
+					{
+						cloudConfigInstance.RegisterGlobalHotkeys();
+					}
 					if (Properties.Settings.Default.showHiddenBalloonTip)
 					{
 						configWindow.showTrayBalloonTip();
@@ -39,9 +42,7 @@ namespace Capture2Net
 			}
 			else
 			{
-				var fileExtension = parameterManagerInstance.GetParameter("imageformat");
-
-				var screenshotInstance = new Screenshot(fileExtension, cloudConfigInstance);
+				var screenshotInstance = new Screenshot(cloudConfigInstance);
 
 				switch (captureMode.ToLower())
 				{
