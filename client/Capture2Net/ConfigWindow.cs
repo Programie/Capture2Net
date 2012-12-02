@@ -64,7 +64,7 @@ namespace Capture2Net
 			}
 			else
 			{
-				Properties.Settings.Default.password = "";// Unsed password
+				Properties.Settings.Default.password = "";// Unset password
 			}
 		}
 
@@ -112,6 +112,8 @@ namespace Capture2Net
 		private void trayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			this.Show();
+			this.WindowState = FormWindowState.Normal;
+			this.BringToFront();// TODO: Does not bring the window to the front?
 		}
 
 		private void ConfigWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -133,6 +135,8 @@ namespace Capture2Net
 		private void trayIconMenu_Show_Click(object sender, EventArgs e)
 		{
 			this.Show();
+			this.WindowState = FormWindowState.Normal;
+			this.BringToFront();
 		}
 
 		private void trayIconMenu_Quit_Click(object sender, EventArgs e)
@@ -164,6 +168,7 @@ namespace Capture2Net
 				this.shortcutInfoForm.ShortcutSelection = string.Join("+", this.cloudConfigInstance.RegisteredShortcutSelection.ToArray());
 				this.shortcutInfoForm.ShortcutWindow = string.Join("+", this.cloudConfigInstance.RegisteredShortcutWindow.ToArray());
 				this.shortcutInfoForm.Show();
+				this.shortcutInfoForm.BringToFront();
 			}
 		}
 	}

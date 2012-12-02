@@ -112,8 +112,10 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ShortcutInfo";
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Shortcut Information";
+			this.TopMost = true;
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
