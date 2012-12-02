@@ -122,12 +122,12 @@ namespace Capture2Net.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool playSound {
+        public bool limitToOneInstance {
             get {
-                return ((bool)(this["playSound"]));
+                return ((bool)(this["limitToOneInstance"]));
             }
             set {
-                this["playSound"] = value;
+                this["limitToOneInstance"] = value;
             }
         }
     }

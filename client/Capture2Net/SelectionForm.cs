@@ -23,18 +23,18 @@ namespace Capture2Net
 
 		private void SelectionForm_Load(object sender, EventArgs e)
 		{
-			this.Left = User32.GetSystemMetrics(User32.SM_XVIRTUALSCREEN);
-			this.Top = User32.GetSystemMetrics(User32.SM_YVIRTUALSCREEN);
-			this.Width = User32.GetSystemMetrics(User32.SM_CXVIRTUALSCREEN);
-			this.Height = User32.GetSystemMetrics(User32.SM_CYVIRTUALSCREEN);
+			this.Left = NativeMethods.GetSystemMetrics(NativeMethods.SM_XVIRTUALSCREEN);
+			this.Top = NativeMethods.GetSystemMetrics(NativeMethods.SM_YVIRTUALSCREEN);
+			this.Width = NativeMethods.GetSystemMetrics(NativeMethods.SM_CXVIRTUALSCREEN);
+			this.Height = NativeMethods.GetSystemMetrics(NativeMethods.SM_CYVIRTUALSCREEN);
 
 			this.Invalidate();
 		}
 
 		/// <summary>
-		/// Helper class containing User32 API functions
+		/// Helper class containing API functions
 		/// </summary>
-		private class User32
+		private class NativeMethods
 		{
 			public const int SM_XVIRTUALSCREEN = 76;
 			public const int SM_YVIRTUALSCREEN = 77;

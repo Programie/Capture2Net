@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Capture2Net
 {
-	public class Screenshot
+	public class Screenshot :IDisposable
 	{
 		ScreenCapture screenCaptureInstance;
 		CloudConfig cloudConfigInstance;
@@ -28,18 +28,41 @@ namespace Capture2Net
 			Window
 		}
 
-		[DllImport("user32.dll")]
-		public static extern IntPtr GetForegroundWindow();
-		[DllImport("user32.dll")]
-		public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-		[DllImport("user32.dll")]
-		public static extern int GetWindowTextLength(IntPtr hWnd);
+		internal class NativeMethods
+		{
+			[DllImport("user32.dll")]
+			public static extern IntPtr GetForegroundWindow();
+			[DllImport("user32.dll", CharSet = CharSet.Unicode)]
+			public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+			[DllImport("user32.dll")]
+			public static extern int GetWindowTextLength(IntPtr hWnd);
+		}
 
 		public Screenshot(CloudConfig cloudConfigInstance)
 		{
 			this.screenCaptureInstance = new ScreenCapture();
 			this.cloudConfigInstance = cloudConfigInstance;
-			this.activeWindow = GetForegroundWindow();
+			this.activeWindow = NativeMethods.GetForegroundWindow();
+		}
+
+		~Screenshot()
+		{
+			Dispose(false);
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (this.notifyIcon != null)
+			{
+				this.notifyIcon.Dispose();
+				this.notifyIcon = null;
+			}
 		}
 
 		// Screenshot of whole screen
@@ -73,10 +96,6 @@ namespace Capture2Net
 		private void PostProcess(ScreenshotType type)
 		{
 			new SoundPlayer(Properties.Resources.CameraSound).PlaySync();
-			this.notifyIcon = new NotifyIcon();
-			this.notifyIcon.Icon = Properties.Resources.UploadIcon;
-			this.notifyIcon.Text = "Uploading screenshot...";
-			this.notifyIcon.Visible = true;
 			this.cloudConfigInstance.Load();
 			var tempFile = System.IO.Path.GetTempFileName();
 			var jsonData = this.cloudConfigInstance.jsonData["screenshots"][type.ToString().ToLower()];
@@ -105,6 +124,11 @@ namespace Capture2Net
 					break;
 			}
 			this.image.Save(tempFile, imageFormat);
+
+			this.notifyIcon = new NotifyIcon();
+			this.notifyIcon.Icon = Properties.Resources.UploadIcon;
+			this.notifyIcon.Text = "Capture2Net is uploading a screenshot (" + Utils.GetHumanReadableFileSize(new FileInfo(tempFile).Length) + ")...";
+			this.notifyIcon.Visible = true;
 			if (Properties.Settings.Default.acceptAllCertificates)
 			{
 				ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(this.AcceptAllCertifications);
@@ -138,8 +162,8 @@ namespace Capture2Net
 				// Write info data block
 				List<string> infoDataList = new List<string>();
 
-				var activeWindowTitle = new StringBuilder(GetWindowTextLength(this.activeWindow) + 1);// Length of window title + 1 for the null character
-				GetWindowText(this.activeWindow, activeWindowTitle, activeWindowTitle.Capacity);
+				var activeWindowTitle = new StringBuilder(NativeMethods.GetWindowTextLength(this.activeWindow) + 1);// Length of window title + 1 for the null character
+				NativeMethods.GetWindowText(this.activeWindow, activeWindowTitle, activeWindowTitle.Capacity);
 
 				infoDataList.Add("\tINFODATA\t");// Code to identify the start of the info data block (Must contain characters which are never used in the info data)
 				infoDataList.Add("screenshotType=" + type.ToString().ToLower());// Screenshot type
@@ -163,15 +187,15 @@ namespace Capture2Net
 
 					var responseText = readStream.ReadToEnd();
 
-					readStream.Close();
 					responseStream.Close();
 
 					if (responseText.Length > 8 && (responseText.Substring(0, 7) == "http://" || responseText.Substring(0, 8) == "https://"))
 					{
 						this.screenshotUrl = responseText;
 						Clipboard.SetText(this.screenshotUrl);
+						this.notifyIcon.Text = "Capture2Net - Upload complete";
 						this.notifyIcon.BalloonTipClicked += new EventHandler(this.OpenUrlInBrowser);
-						this.notifyIcon.ShowBalloonTip(5000, "Screenshot Upload", "Upload complete", ToolTipIcon.Info);
+						this.notifyIcon.ShowBalloonTip(5000, "Capture2Net - Upload complete", "The screenshot URL has been copied to the clipboard.\n\nClick here to open the URL in your browser.", ToolTipIcon.Info);
 						this.notifyIcon.BalloonTipClosed += new EventHandler(this.BalloonTipClosed);
 						Application.Run();
 					}

@@ -6,10 +6,13 @@ namespace Capture2Net
 {
 	class Hotkey : Form
 	{
-		[DllImport("user32.dll")]
-		private static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers fsModifiers, Keys vk);
-		[DllImport("user32.dll")]
-		private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+		internal class NativeMethods
+		{
+			[DllImport("user32.dll")]
+			public static extern bool RegisterHotKey(IntPtr hWnd, int id, KeyModifiers fsModifiers, Keys vk);
+			[DllImport("user32.dll")]
+			public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+		}
 
 		public enum KeyModifiers
 		{
@@ -34,12 +37,12 @@ namespace Capture2Net
 
 		~Hotkey()
 		{
-			UnregisterHotKey(this.Handle, this.id);
+			NativeMethods.UnregisterHotKey(this.Handle, this.id);
 		}
 
 		public void UnregisterShortcut()
 		{
-			UnregisterHotKey(this.Handle, this.id);
+			NativeMethods.UnregisterHotKey(this.Handle, this.id);
 		}
 
 		private void RegisterHotKey(Keys key, KeyModifiers modifier)
@@ -49,7 +52,7 @@ namespace Capture2Net
 				return;
 			}
 
-			if (!RegisterHotKey(this.Handle, this.id, modifier, key))
+			if (!NativeMethods.RegisterHotKey(this.Handle, this.id, modifier, key))
 			{
 				throw new ApplicationException("Hotkey already in use");
 			}

@@ -9,14 +9,13 @@ using System.Windows.Forms;
 
 namespace Capture2Net
 {
-	public class CloudConfig
+	public class CloudConfig : IDisposable
 	{
 		public JObject jsonData;
 
 		Hotkey shortcutScreen;
 		Hotkey shortcutSelection;
 		Hotkey shortcutWindow;
-		bool hotkeysRegistered;
 		List<string> registeredShortcutScreen;
 		List<string> registeredShortcutSelection;
 		List<string> registeredShortcutWindow;
@@ -43,6 +42,17 @@ namespace Capture2Net
 			{
 				return this.registeredShortcutWindow;
 			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			this.UnregisterGlobalHotkeys();
 		}
 
 		public bool Load()
@@ -107,12 +117,7 @@ namespace Capture2Net
 			registeredShortcutScreen = new List<string>();
 			registeredShortcutSelection = new List<string>();
 			registeredShortcutWindow = new List<string>();
-			if (hotkeysRegistered)
-			{
-				this.shortcutScreen.UnregisterShortcut();
-				this.shortcutSelection.UnregisterShortcut();
-				this.shortcutWindow.UnregisterShortcut();
-			}
+			this.UnregisterGlobalHotkeys();
 			try
 			{
 				var jsonObject = this.jsonData["screenshots"]["screen"]["shortcut"];
@@ -209,7 +214,25 @@ namespace Capture2Net
 			{
 				MessageBox.Show("Unable to register hotkey for 'Window'!");
 			}
-			this.hotkeysRegistered = true;
+		}
+
+		private void UnregisterGlobalHotkeys()
+		{
+			if (this.shortcutScreen != null)
+			{
+				this.shortcutScreen.Dispose();
+				this.shortcutScreen = null;
+			}
+			if (this.shortcutSelection != null)
+			{
+				this.shortcutSelection.Dispose();
+				this.shortcutSelection = null;
+			}
+			if (this.shortcutWindow != null)
+			{
+				this.shortcutWindow.Dispose();
+				this.shortcutWindow = null;
+			}
 		}
 
 		private void ShortcutScreen(object sender, EventArgs e)

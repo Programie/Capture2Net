@@ -40,16 +40,18 @@
 			this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.trayIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.trayIconMenu_Show = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.trayIconMenu_ShortcutInfo = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.trayIconMenu_Quit = new System.Windows.Forms.ToolStripMenuItem();
+			this.StartWithWindows = new System.Windows.Forms.CheckBox();
 			this.AcceptAllCertificates = new System.Windows.Forms.CheckBox();
 			this.Port = new System.Windows.Forms.NumericUpDown();
 			this.Protocol = new System.Windows.Forms.ComboBox();
 			this.Username = new System.Windows.Forms.TextBox();
 			this.Path = new System.Windows.Forms.TextBox();
 			this.Hostname = new System.Windows.Forms.TextBox();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.trayIconMenu_ShortcutInfo = new System.Windows.Forms.ToolStripMenuItem();
+			this.LimitToOneInstance = new System.Windows.Forms.CheckBox();
 			this.trayIconMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Port)).BeginInit();
 			this.SuspendLayout();
@@ -140,7 +142,7 @@
             this.toolStripSeparator2,
             this.trayIconMenu_Quit});
 			this.trayIconMenu.Name = "trayIconMenu";
-			this.trayIconMenu.Size = new System.Drawing.Size(186, 104);
+			this.trayIconMenu.Size = new System.Drawing.Size(186, 82);
 			// 
 			// trayIconMenu_Show
 			// 
@@ -150,12 +152,40 @@
 			this.trayIconMenu_Show.ToolTipText = "Show the configuration window.";
 			this.trayIconMenu_Show.Click += new System.EventHandler(this.trayIconMenu_Show_Click);
 			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(182, 6);
+			// 
+			// trayIconMenu_ShortcutInfo
+			// 
+			this.trayIconMenu_ShortcutInfo.Name = "trayIconMenu_ShortcutInfo";
+			this.trayIconMenu_ShortcutInfo.Size = new System.Drawing.Size(185, 22);
+			this.trayIconMenu_ShortcutInfo.Text = "Shortcut Information";
+			this.trayIconMenu_ShortcutInfo.Click += new System.EventHandler(this.trayIconMenu_ShortcutInfo_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
+			// 
 			// trayIconMenu_Quit
 			// 
 			this.trayIconMenu_Quit.Name = "trayIconMenu_Quit";
 			this.trayIconMenu_Quit.Size = new System.Drawing.Size(185, 22);
 			this.trayIconMenu_Quit.Text = "Quit";
 			this.trayIconMenu_Quit.Click += new System.EventHandler(this.trayIconMenu_Quit_Click);
+			// 
+			// StartWithWindows
+			// 
+			this.StartWithWindows.AutoSize = true;
+			this.StartWithWindows.Location = new System.Drawing.Point(15, 170);
+			this.StartWithWindows.Name = "StartWithWindows";
+			this.StartWithWindows.Size = new System.Drawing.Size(117, 17);
+			this.StartWithWindows.TabIndex = 19;
+			this.StartWithWindows.Text = "Start with Windows";
+			this.StartWithWindows.ThreeState = true;
+			this.StartWithWindows.UseVisualStyleBackColor = true;
 			// 
 			// AcceptAllCertificates
 			// 
@@ -230,29 +260,27 @@
 			this.Hostname.TabIndex = 5;
 			this.Hostname.Text = global::Capture2Net.Properties.Settings.Default.hostname;
 			// 
-			// toolStripSeparator1
+			// LimitToOneInstance
 			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(182, 6);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
-			// 
-			// trayIconMenu_ShortcutInfo
-			// 
-			this.trayIconMenu_ShortcutInfo.Name = "trayIconMenu_ShortcutInfo";
-			this.trayIconMenu_ShortcutInfo.Size = new System.Drawing.Size(185, 22);
-			this.trayIconMenu_ShortcutInfo.Text = "Shortcut Information";
-			this.trayIconMenu_ShortcutInfo.Click += new System.EventHandler(this.trayIconMenu_ShortcutInfo_Click);
+			this.LimitToOneInstance.AutoSize = true;
+			this.LimitToOneInstance.Checked = global::Capture2Net.Properties.Settings.Default.limitToOneInstance;
+			this.LimitToOneInstance.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.LimitToOneInstance.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Capture2Net.Properties.Settings.Default, "limitToOneInstance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+			this.LimitToOneInstance.Location = new System.Drawing.Point(15, 147);
+			this.LimitToOneInstance.Name = "LimitToOneInstance";
+			this.LimitToOneInstance.Size = new System.Drawing.Size(123, 17);
+			this.LimitToOneInstance.TabIndex = 20;
+			this.LimitToOneInstance.Text = "Limit to one instance";
+			this.LimitToOneInstance.UseVisualStyleBackColor = true;
 			// 
 			// ConfigWindow
 			// 
 			this.AcceptButton = this.Save;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(384, 152);
+			this.ClientSize = new System.Drawing.Size(384, 197);
+			this.Controls.Add(this.LimitToOneInstance);
+			this.Controls.Add(this.StartWithWindows);
 			this.Controls.Add(this.AcceptAllCertificates);
 			this.Controls.Add(this.Port);
 			this.Controls.Add(this.HostPortSeparatorLabel);
@@ -303,6 +331,8 @@
   private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
   private System.Windows.Forms.ToolStripMenuItem trayIconMenu_ShortcutInfo;
   private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+  private System.Windows.Forms.CheckBox StartWithWindows;
+  private System.Windows.Forms.CheckBox LimitToOneInstance;
  }
 }
 

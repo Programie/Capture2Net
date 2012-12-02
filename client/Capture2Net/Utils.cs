@@ -1,4 +1,6 @@
-﻿namespace Capture2Net
+﻿using System;
+using System.Collections.Generic;
+namespace Capture2Net
 {
 	static class Utils
 	{
@@ -13,6 +15,23 @@
 				path += "/";
 			}
 			return path;
+		}
+
+		public static string GetHumanReadableFileSize(long size)
+		{
+			string[] units = {"B", "KB", "MB", "GB", "TB", "PB", "EB"};
+
+			string suffix = "";
+			for (int unitIndex = 0; unitIndex < units.Length; unitIndex++)
+			{
+				if (size < 1024)
+				{
+					suffix = units[unitIndex];
+					break;
+				}
+				size /= 1024;
+			}
+			return size.ToString("0.##") + " " + suffix;
 		}
 	}
 }

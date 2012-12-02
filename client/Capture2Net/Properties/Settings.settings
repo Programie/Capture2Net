@@ -26,7 +26,7 @@
     <Setting Name="showHiddenBalloonTip" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="playSound" Type="System.Boolean" Scope="User">
+    <Setting Name="limitToOneInstance" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>

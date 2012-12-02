@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,6 +23,15 @@ namespace Capture2Net
 			var captureMode = parameterManagerInstance.GetParameter("capture");
 			if (captureMode == null)
 			{
+				var mutex = new Mutex(true, "Capture2Net");
+				if (Properties.Settings.Default.limitToOneInstance)
+				{
+					if (!mutex.WaitOne(TimeSpan.Zero, true))
+					{
+						MessageBox.Show("Another instance is already running!", "Capture2Net", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+					}
+				}
 				var configWindow = new ConfigWindow(parameterManagerInstance, cloudConfigInstance);
 				if (parameterManagerInstance.GetParameter("config") != null || Properties.Settings.Default.hostname == "" || Properties.Settings.Default.username == "" || Properties.Settings.Default.password == "")
 				{
