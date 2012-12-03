@@ -97,18 +97,6 @@ namespace Capture2Net.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool acceptAllCertificates {
-            get {
-                return ((bool)(this["acceptAllCertificates"]));
-            }
-            set {
-                this["acceptAllCertificates"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool showHiddenBalloonTip {
             get {

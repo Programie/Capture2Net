@@ -129,10 +129,7 @@ namespace Capture2Net
 			this.notifyIcon.Icon = Properties.Resources.UploadIcon;
 			this.notifyIcon.Text = "Capture2Net is uploading a screenshot (" + Utils.GetHumanReadableFileSize(new FileInfo(tempFile).Length) + ")...";
 			this.notifyIcon.Visible = true;
-			if (Properties.Settings.Default.acceptAllCertificates)
-			{
-				ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(this.AcceptAllCertifications);
-			}
+			ServicePointManager.ServerCertificateValidationCallback = this.CheckSSLCertificate;
 			try
 			{
 				// Initialization
@@ -221,11 +218,6 @@ namespace Capture2Net
 			notifyIcon.Dispose();
 		}
 
-		private bool AcceptAllCertifications(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
-		{
-			return true;
-		}
-
 		private void OpenUrlInBrowser(object sender, EventArgs e)
 		{
 			Process.Start(this.screenshotUrl);
@@ -237,6 +229,12 @@ namespace Capture2Net
 		{
 			this.notifyIcon.Dispose();
 			Application.Exit();
+		}
+
+		private bool CheckSSLCertificate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+		{
+			var sslChain = new SSLChain();
+			return sslChain.CheckCertificate(sender, certification, chain, sslPolicyErrors);
 		}
 	}
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
+
 namespace Capture2Net
 {
 	static class Utils

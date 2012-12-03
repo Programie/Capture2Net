@@ -45,7 +45,6 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.trayIconMenu_Quit = new System.Windows.Forms.ToolStripMenuItem();
 			this.StartWithWindows = new System.Windows.Forms.CheckBox();
-			this.AcceptAllCertificates = new System.Windows.Forms.CheckBox();
 			this.Port = new System.Windows.Forms.NumericUpDown();
 			this.Protocol = new System.Windows.Forms.ComboBox();
 			this.Username = new System.Windows.Forms.TextBox();
@@ -179,25 +178,13 @@
 			// StartWithWindows
 			// 
 			this.StartWithWindows.AutoSize = true;
-			this.StartWithWindows.Location = new System.Drawing.Point(15, 170);
+			this.StartWithWindows.Location = new System.Drawing.Point(144, 124);
 			this.StartWithWindows.Name = "StartWithWindows";
 			this.StartWithWindows.Size = new System.Drawing.Size(117, 17);
 			this.StartWithWindows.TabIndex = 19;
 			this.StartWithWindows.Text = "Start with Windows";
 			this.StartWithWindows.ThreeState = true;
 			this.StartWithWindows.UseVisualStyleBackColor = true;
-			// 
-			// AcceptAllCertificates
-			// 
-			this.AcceptAllCertificates.AutoSize = true;
-			this.AcceptAllCertificates.Checked = global::Capture2Net.Properties.Settings.Default.acceptAllCertificates;
-			this.AcceptAllCertificates.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Capture2Net.Properties.Settings.Default, "acceptAllCertificates", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-			this.AcceptAllCertificates.Location = new System.Drawing.Point(15, 124);
-			this.AcceptAllCertificates.Name = "AcceptAllCertificates";
-			this.AcceptAllCertificates.Size = new System.Drawing.Size(127, 17);
-			this.AcceptAllCertificates.TabIndex = 18;
-			this.AcceptAllCertificates.Text = "Accept all certificates";
-			this.AcceptAllCertificates.UseVisualStyleBackColor = true;
 			// 
 			// Port
 			// 
@@ -266,7 +253,7 @@
 			this.LimitToOneInstance.Checked = global::Capture2Net.Properties.Settings.Default.limitToOneInstance;
 			this.LimitToOneInstance.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.LimitToOneInstance.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Capture2Net.Properties.Settings.Default, "limitToOneInstance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-			this.LimitToOneInstance.Location = new System.Drawing.Point(15, 147);
+			this.LimitToOneInstance.Location = new System.Drawing.Point(15, 124);
 			this.LimitToOneInstance.Name = "LimitToOneInstance";
 			this.LimitToOneInstance.Size = new System.Drawing.Size(123, 17);
 			this.LimitToOneInstance.TabIndex = 20;
@@ -278,10 +265,9 @@
 			this.AcceptButton = this.Save;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(384, 197);
+			this.ClientSize = new System.Drawing.Size(384, 152);
 			this.Controls.Add(this.LimitToOneInstance);
 			this.Controls.Add(this.StartWithWindows);
-			this.Controls.Add(this.AcceptAllCertificates);
 			this.Controls.Add(this.Port);
 			this.Controls.Add(this.HostPortSeparatorLabel);
 			this.Controls.Add(this.Protocol);
@@ -323,7 +309,6 @@
   private System.Windows.Forms.ComboBox Protocol;
   private System.Windows.Forms.Label HostPortSeparatorLabel;
   private System.Windows.Forms.NumericUpDown Port;
-  private System.Windows.Forms.CheckBox AcceptAllCertificates;
   private System.Windows.Forms.NotifyIcon trayIcon;
   private System.Windows.Forms.ContextMenuStrip trayIconMenu;
   private System.Windows.Forms.ToolStripMenuItem trayIconMenu_Show;

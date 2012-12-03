@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -59,10 +60,7 @@ namespace Capture2Net
 		{
 			try
 			{
-				if (Properties.Settings.Default.acceptAllCertificates)
-				{
-					ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(this.AcceptAllCertifications);
-				}
+				ServicePointManager.ServerCertificateValidationCallback = this.CheckSSLCertificate;
 
 				// Initialization
 				var uri = new Uri(Properties.Settings.Default.protocol.ToLower() + "://" + Properties.Settings.Default.hostname + ":" + Properties.Settings.Default.port + Utils.GetValidPath(Properties.Settings.Default.path) + "getconfig.php");
@@ -81,8 +79,15 @@ namespace Capture2Net
 				{
 					var responseStream = response.GetResponseStream();
 					var readStream = new StreamReader(responseStream);
-					this.jsonData = JObject.Parse(readStream.ReadToEnd());
-					return true;
+					try
+					{
+						this.jsonData = JObject.Parse(readStream.ReadToEnd());
+						return true;
+					}
+					catch (JsonReaderException exception)
+					{
+						MessageBox.Show(exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 				}
 			}
 			catch (WebException exception)
@@ -105,11 +110,6 @@ namespace Capture2Net
 				}
 			}
 			return false;
-		}
-
-		private bool AcceptAllCertifications(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
-		{
-			return true;
 		}
 
 		public void RegisterGlobalHotkeys()
@@ -248,6 +248,12 @@ namespace Capture2Net
 		private void ShortcutWindow(object sender, EventArgs e)
 		{
 			Process.Start(Environment.GetCommandLineArgs()[0], "/capture window");
+		}
+
+		private bool CheckSSLCertificate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+		{
+			var sslChain = new SSLChain();
+			return sslChain.CheckCertificate(sender, certification, chain, sslPolicyErrors);
 		}
 	}
 }

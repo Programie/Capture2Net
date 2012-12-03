@@ -132,6 +132,7 @@
     <Compile Include="ShortcutInfo.Designer.cs">
       <DependentUpon>ShortcutInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="SSLChain.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="ConfigWindow.resx">
       <DependentUpon>ConfigWindow.cs</DependentUpon>
