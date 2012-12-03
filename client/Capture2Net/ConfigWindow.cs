@@ -49,7 +49,10 @@ namespace Capture2Net
 						this.autostartRegistryKey.SetValue("Capture2Net", "\"" + Environment.GetCommandLineArgs()[0]+ "\"");
 						break;
 					case CheckState.Unchecked:
-						this.autostartRegistryKey.DeleteValue("Capture2Net");
+						if (this.IsAutostartEnabled() != CheckState.Unchecked)
+						{
+							this.autostartRegistryKey.DeleteValue("Capture2Net");
+						}
 						break;
 				}
 
@@ -73,22 +76,7 @@ namespace Capture2Net
 			this.Protocol.SelectedItem = Properties.Settings.Default.protocol;
 			this.Password.Text = ASCIIEncoding.ASCII.GetString(Convert.FromBase64String(Properties.Settings.Default.password));
 
-			var autostartValue = (string)this.autostartRegistryKey.GetValue("Capture2Net");
-			if (autostartValue == "\"" + Environment.GetCommandLineArgs()[0] + "\"")
-			{
-				this.StartWithWindows.CheckState = CheckState.Checked;
-			}
-			else
-			{
-				if (autostartValue == null)
-				{
-					this.StartWithWindows.CheckState = CheckState.Unchecked;
-				}
-				else
-				{
-					this.StartWithWindows.CheckState = CheckState.Indeterminate;
-				}
-			}
+			this.StartWithWindows.CheckState = this.IsAutostartEnabled();
 		}
 
 		private void Protocol_SelectedIndexChanged(object sender, EventArgs e)
@@ -169,6 +157,26 @@ namespace Capture2Net
 				this.shortcutInfoForm.ShortcutWindow = string.Join("+", this.cloudConfigInstance.RegisteredShortcutWindow.ToArray());
 				this.shortcutInfoForm.Show();
 				this.shortcutInfoForm.BringToFront();
+			}
+		}
+
+		private CheckState IsAutostartEnabled()
+		{
+			var autostartValue = (string)this.autostartRegistryKey.GetValue("Capture2Net");
+			if (autostartValue == "\"" + Environment.GetCommandLineArgs()[0] + "\"" || autostartValue == Environment.GetCommandLineArgs()[0])
+			{
+				return CheckState.Checked;
+			}
+			else
+			{
+				if (autostartValue == null)
+				{
+					return CheckState.Unchecked;
+				}
+				else
+				{
+					return CheckState.Indeterminate;
+				}
 			}
 		}
 	}

@@ -20,10 +20,12 @@ namespace Capture2Net
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
+			new Mutex(true, "Capture2Net_RunCheck");// Only used for installer to check if Capture2Net is running
+
 			var captureMode = parameterManagerInstance.GetParameter("capture");
 			if (captureMode == null)
 			{
-				var mutex = new Mutex(true, "Capture2Net");
+				var mutex = new Mutex(true, "Capture2Net_Main");
 				if (Properties.Settings.Default.limitToOneInstance)
 				{
 					if (!mutex.WaitOne(TimeSpan.Zero, true))
