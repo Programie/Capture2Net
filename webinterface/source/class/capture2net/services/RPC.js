@@ -6,19 +6,23 @@ qx.Class.define("capture2net.services.RPC",
 	{
 		__rpc : new qx.io.remote.Rpc("rpc.php", "RPC"),
 		
-		loadConfig : function()
+		callMethod : function(method, caller, event, params)
 		{
 			this.__rpc.callAsync(function(result, exception)
 			{
-				if (!result || result == "login_required")
+				switch (result)
 				{
-					alert("Login required");
+					case "forbidden":
+						alert("You do not have the permission to use this function!");
+						break;
+					case "login_required":
+						alert("Login required");
+						break;
+					default:
+						caller.fireDataEvent(event, result);
+						break;
 				}
-				else
-				{
-					alert(result);
-				}
-			}, "loadConfig");
+			}, method, params);
 		}
 	}
 });

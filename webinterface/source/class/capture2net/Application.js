@@ -4,11 +4,17 @@
 qx.Class.define("capture2net.Application",
 {
 	extend : qx.application.Standalone,
+	
+	events :
+	{
+		configLoaded : "qx.event.type.Data"
+	},
+	
 	members :
 	{
 		/**
-		* This method contains the initial application code and gets called during startup of the application
-		*/
+		 * This method contains the initial application code and gets called during startup of the application
+		 */
 		main : function()
 		{
 			// Call super class
@@ -23,7 +29,20 @@ qx.Class.define("capture2net.Application",
 				qx.log.appender.Console;
 			}
 			
-			capture2net.services.RPC.loadConfig();
+			// Register event listeners
+			this.addListener("loadConfig", this.configLoaded, this);
+			
+			// Try to load the configuration
+			capture2net.services.RPC.callMethod("loadConfig", this, "configLoaded");
+		},
+		
+		/**
+		 * This method gets called as soon as the loadConfig call returns
+		 */
+		configLoaded : function(event)
+		{
+			var result = event.getData();
+			alert(result);
 		}
 	}
 });
