@@ -12,15 +12,17 @@ namespace Capture2Net
 		bool closingFromTrayIconMenu;
 		ParameterManager parameterManagerInstance;
 		CloudConfig cloudConfigInstance;
+		Shortcuts shortcutsInstance;
 		ShortcutInfo shortcutInfoForm;
 		RegistryKey autostartRegistryKey;
 
-		public ConfigWindow(ParameterManager parameterManagerInstance, CloudConfig cloudConfigInstance)
+		public ConfigWindow(ParameterManager parameterManagerInstance, CloudConfig cloudConfigInstance, Shortcuts shortcutsInstance)
 		{
 			InitializeComponent();
 
 			this.parameterManagerInstance = parameterManagerInstance;
 			this.cloudConfigInstance = cloudConfigInstance;
+			this.shortcutsInstance = shortcutsInstance;
 
 			this.autostartRegistryKey = Registry.CurrentUser.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
 		}
@@ -40,7 +42,7 @@ namespace Capture2Net
 
 			if (this.cloudConfigInstance.Load())
 			{
-				this.cloudConfigInstance.RegisterGlobalHotkeys();
+				this.shortcutsInstance.Register();
 				Properties.Settings.Default.Save();
 
 				switch (this.StartWithWindows.CheckState)
@@ -142,7 +144,7 @@ namespace Capture2Net
 
 		private void trayIconMenu_ShortcutInfo_Click(object sender, EventArgs e)
 		{
-			if (this.cloudConfigInstance.RegisteredShortcutScreen == null)
+			if (this.shortcutsInstance.RegisteredShortcutScreen == null || this.shortcutsInstance.RegisteredShortcutSelection == null || this.shortcutsInstance.RegisteredShortcutWindow == null)
 			{
 				MessageBox.Show("No configuration data loaded yet!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
@@ -152,9 +154,9 @@ namespace Capture2Net
 				{
 					this.shortcutInfoForm = new ShortcutInfo();
 				}
-				this.shortcutInfoForm.ShortcutScreen = string.Join("+", this.cloudConfigInstance.RegisteredShortcutScreen.ToArray());
-				this.shortcutInfoForm.ShortcutSelection = string.Join("+", this.cloudConfigInstance.RegisteredShortcutSelection.ToArray());
-				this.shortcutInfoForm.ShortcutWindow = string.Join("+", this.cloudConfigInstance.RegisteredShortcutWindow.ToArray());
+				this.shortcutInfoForm.ShortcutScreen = string.Join("+", this.shortcutsInstance.RegisteredShortcutScreen.ToArray());
+				this.shortcutInfoForm.ShortcutSelection = string.Join("+", this.shortcutsInstance.RegisteredShortcutSelection.ToArray());
+				this.shortcutInfoForm.ShortcutWindow = string.Join("+", this.shortcutsInstance.RegisteredShortcutWindow.ToArray());
 				this.shortcutInfoForm.Show();
 				this.shortcutInfoForm.BringToFront();
 			}

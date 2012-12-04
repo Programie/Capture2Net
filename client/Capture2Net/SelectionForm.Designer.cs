@@ -45,6 +45,7 @@
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Capture2Net Rectangle Selection";
+			this.TopMost = true;
 			this.Load += new System.EventHandler(this.SelectionForm_Load);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.SelectionForm_Paint);
 			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SelectionForm_MouseDown);

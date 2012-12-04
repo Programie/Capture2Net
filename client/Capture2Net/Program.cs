@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Capture2Net
@@ -17,13 +15,14 @@ namespace Capture2Net
 		{
 			var parameterManagerInstance = new ParameterManager(args);
 			var cloudConfigInstance = new CloudConfig();
+			var shortcutsInstance = new Shortcuts(cloudConfigInstance);
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			new Mutex(true, "Capture2Net_RunCheck");// Only used for installer to check if Capture2Net is running
 
-			var captureMode = parameterManagerInstance.GetParameter("capture");
-			if (captureMode == null)
+			var uploadFile = parameterManagerInstance.GetParameter("upload");
+			if (uploadFile == null)
 			{
 				var mutex = new Mutex(true, "Capture2Net_Main");
 				if (Properties.Settings.Default.limitToOneInstance)
@@ -34,8 +33,8 @@ namespace Capture2Net
 						return;
 					}
 				}
-				var configWindow = new ConfigWindow(parameterManagerInstance, cloudConfigInstance);
-				if (parameterManagerInstance.GetParameter("config") != null || Properties.Settings.Default.hostname == "" || Properties.Settings.Default.username == "" || Properties.Settings.Default.password == "")
+				var configWindow = new ConfigWindow(parameterManagerInstance, cloudConfigInstance, shortcutsInstance);
+				if (Properties.Settings.Default.hostname == "" || Properties.Settings.Default.username == "" || Properties.Settings.Default.password == "")
 				{
 					configWindow.Show();
 				}
@@ -43,7 +42,7 @@ namespace Capture2Net
 				{
 					if (cloudConfigInstance.Load())
 					{
-						cloudConfigInstance.RegisterGlobalHotkeys();
+						shortcutsInstance.Register();
 					}
 					if (Properties.Settings.Default.showHiddenBalloonTip)
 					{
@@ -54,27 +53,16 @@ namespace Capture2Net
 			}
 			else
 			{
-				var screenshotInstance = new Screenshot(cloudConfigInstance);
-
-				switch (captureMode.ToLower())
+				if (uploadFile == "")
 				{
-					case "screen":
-						screenshotInstance.Screen();
-						break;
-					case "selection":
-						screenshotInstance.Selection();
-						break;
-					case "window":
-						screenshotInstance.Window();
-						break;
-					default:
-						var text = "";
-						if (captureMode != "")
-						{
-							text = " '" + captureMode + "'";
-						}
-						MessageBox.Show("Invalid capture mode" + text + "!\n\n\nAvailable modes:\n\nscreen\nselection\nwindow", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						break;
+					MessageBox.Show("No file specified!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				else
+				{
+					new Uploader(uploadFile);
+					
+					// Try to remove temporary file
+					File.Delete(uploadFile);
 				}
 			}
 		}
