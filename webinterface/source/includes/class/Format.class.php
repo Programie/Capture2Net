@@ -9,7 +9,7 @@ class Format
 		$fileName = str_replace("%Y", date("Y", $time), $fileName);
 		$fileName = str_replace("%m", date("m", $time), $fileName);
 		$fileName = str_replace("%d", date("d", $time), $fileName);
-		$fileName = str_replace("%h", date("h", $time), $fileName);
+		$fileName = str_replace("%h", date("H", $time), $fileName);
 		$fileName = str_replace("%i", date("i", $time), $fileName);
 		$fileName = str_replace("%s", date("s", $time), $fileName);
 		$fileName = str_replace("%W", str_replace("%", "%%", $infoData["activeWindow"]), $fileName);
