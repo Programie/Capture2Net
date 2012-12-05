@@ -29,7 +29,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 Source: "..\Capture2Net\bin\Release\Capture2Net.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Capture2Net\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
@@ -44,3 +43,23 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+
+[Code]
+function InitializeSetup(): Boolean;
+var
+	errorCode: integer;
+	key: string;
+	release: cardinal;
+	dotNetInstalled: boolean;
+begin
+	key := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full';
+
+	dotNetInstalled := RegQueryDWordValue(HKLM, key, 'Release', release);
+	dotNetInstalled := dotNetInstalled and (release >= 378389);
+	if not dotNetInstalled then begin
+		MsgBox('Capture2Net requires .NET Framework 4.5 which is currently not installed.'#13#13'This installer will now open the download page of .NET Framework 4.5 in your browser.'#13#13'Download and install it and try to install Capture2Net again.', mbError, MB_OK);
+		ShellExec('open', 'http://www.microsoft.com/download/details.aspx?id=30653', '', '', SW_SHOWNORMAL, ewNoWait, errorCode);
+		result := false;
+	end else
+		result := true;
+end;

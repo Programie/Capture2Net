@@ -76,7 +76,7 @@
 			this.PathText.Location = new System.Drawing.Point(12, 65);
 			this.PathText.Name = "PathText";
 			this.PathText.Size = new System.Drawing.Size(32, 13);
-			this.PathText.TabIndex = 2;
+			this.PathText.TabIndex = 0;
 			this.PathText.Text = "Path:";
 			// 
 			// UsernameText
@@ -85,7 +85,7 @@
 			this.UsernameText.Location = new System.Drawing.Point(12, 91);
 			this.UsernameText.Name = "UsernameText";
 			this.UsernameText.Size = new System.Drawing.Size(58, 13);
-			this.UsernameText.TabIndex = 3;
+			this.UsernameText.TabIndex = 0;
 			this.UsernameText.Text = "Username:";
 			// 
 			// PasswordText
@@ -94,7 +94,7 @@
 			this.PasswordText.Location = new System.Drawing.Point(12, 117);
 			this.PasswordText.Name = "PasswordText";
 			this.PasswordText.Size = new System.Drawing.Size(56, 13);
-			this.PasswordText.TabIndex = 4;
+			this.PasswordText.TabIndex = 0;
 			this.PasswordText.Text = "Password:";
 			// 
 			// Save
@@ -102,7 +102,7 @@
 			this.Save.Location = new System.Drawing.Point(272, 140);
 			this.Save.Name = "Save";
 			this.Save.Size = new System.Drawing.Size(100, 30);
-			this.Save.TabIndex = 13;
+			this.Save.TabIndex = 9;
 			this.Save.Text = "Save";
 			this.Save.UseVisualStyleBackColor = true;
 			this.Save.Click += new System.EventHandler(this.Save_Click);
@@ -113,7 +113,7 @@
 			this.HostPortSeparatorLabel.Location = new System.Drawing.Point(303, 38);
 			this.HostPortSeparatorLabel.Name = "HostPortSeparatorLabel";
 			this.HostPortSeparatorLabel.Size = new System.Drawing.Size(10, 13);
-			this.HostPortSeparatorLabel.TabIndex = 16;
+			this.HostPortSeparatorLabel.TabIndex = 0;
 			this.HostPortSeparatorLabel.Text = ":";
 			// 
 			// Password
@@ -121,7 +121,7 @@
 			this.Password.Location = new System.Drawing.Point(76, 114);
 			this.Password.Name = "Password";
 			this.Password.Size = new System.Drawing.Size(296, 20);
-			this.Password.TabIndex = 9;
+			this.Password.TabIndex = 6;
 			this.Password.UseSystemPasswordChar = true;
 			// 
 			// trayIcon
@@ -187,7 +187,7 @@
 			this.StartWithWindows.Location = new System.Drawing.Point(144, 153);
 			this.StartWithWindows.Name = "StartWithWindows";
 			this.StartWithWindows.Size = new System.Drawing.Size(117, 17);
-			this.StartWithWindows.TabIndex = 19;
+			this.StartWithWindows.TabIndex = 8;
 			this.StartWithWindows.Text = "Start with Windows";
 			this.StartWithWindows.ThreeState = true;
 			this.StartWithWindows.UseVisualStyleBackColor = true;
@@ -207,7 +207,12 @@
             0});
 			this.Port.Name = "Port";
 			this.Port.Size = new System.Drawing.Size(57, 20);
-			this.Port.TabIndex = 17;
+			this.Port.TabIndex = 3;
+			this.Port.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			// 
 			// Protocol
 			// 
@@ -219,7 +224,7 @@
 			this.Protocol.Location = new System.Drawing.Point(76, 35);
 			this.Protocol.Name = "Protocol";
 			this.Protocol.Size = new System.Drawing.Size(60, 21);
-			this.Protocol.TabIndex = 15;
+			this.Protocol.TabIndex = 1;
 			this.Protocol.SelectedIndexChanged += new System.EventHandler(this.Protocol_SelectedIndexChanged);
 			// 
 			// Username
@@ -227,30 +232,31 @@
 			this.Username.Location = new System.Drawing.Point(76, 88);
 			this.Username.Name = "Username";
 			this.Username.Size = new System.Drawing.Size(296, 20);
-			this.Username.TabIndex = 8;
+			this.Username.TabIndex = 5;
 			// 
 			// Path
 			// 
 			this.Path.Location = new System.Drawing.Point(76, 62);
 			this.Path.Name = "Path";
 			this.Path.Size = new System.Drawing.Size(296, 20);
-			this.Path.TabIndex = 7;
+			this.Path.TabIndex = 4;
 			// 
 			// Hostname
 			// 
 			this.Hostname.Location = new System.Drawing.Point(142, 35);
 			this.Hostname.Name = "Hostname";
 			this.Hostname.Size = new System.Drawing.Size(160, 20);
-			this.Hostname.TabIndex = 5;
+			this.Hostname.TabIndex = 2;
 			// 
 			// LimitToOneInstance
 			// 
 			this.LimitToOneInstance.AutoSize = true;
+			this.LimitToOneInstance.Checked = true;
 			this.LimitToOneInstance.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.LimitToOneInstance.Location = new System.Drawing.Point(15, 153);
 			this.LimitToOneInstance.Name = "LimitToOneInstance";
 			this.LimitToOneInstance.Size = new System.Drawing.Size(123, 17);
-			this.LimitToOneInstance.TabIndex = 20;
+			this.LimitToOneInstance.TabIndex = 7;
 			this.LimitToOneInstance.Text = "Limit to one instance";
 			this.LimitToOneInstance.UseVisualStyleBackColor = true;
 			// 
@@ -276,19 +282,19 @@
 			// menuHelp
 			// 
 			this.menuHelp.Name = "menuHelp";
-			this.menuHelp.Size = new System.Drawing.Size(152, 22);
+			this.menuHelp.Size = new System.Drawing.Size(107, 22);
 			this.menuHelp.Text = "Help";
 			this.menuHelp.Click += new System.EventHandler(this.menuHelp_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(104, 6);
 			// 
 			// menuAbout
 			// 
 			this.menuAbout.Name = "menuAbout";
-			this.menuAbout.Size = new System.Drawing.Size(152, 22);
+			this.menuAbout.Size = new System.Drawing.Size(107, 22);
 			this.menuAbout.Text = "About";
 			this.menuAbout.Click += new System.EventHandler(this.menuAbout_Click);
 			// 
