@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -33,6 +34,13 @@ namespace Capture2Net
 						return;
 					}
 				}
+
+				var updateCheckInstance = new UpdateCheck();
+				if (updateCheckInstance.DoExit)
+				{
+					return;
+				}
+
 				var configWindow = new ConfigWindow(parameterManagerInstance, cloudConfigInstance, shortcutsInstance);
 				if (Properties.Settings.Default.hostname == "" || Properties.Settings.Default.username == "" || Properties.Settings.Default.password == "")
 				{

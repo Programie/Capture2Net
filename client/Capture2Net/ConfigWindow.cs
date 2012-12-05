@@ -1,6 +1,8 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Diagnostics;
 using System.Net;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -180,6 +182,16 @@ namespace Capture2Net
 					return CheckState.Indeterminate;
 				}
 			}
+		}
+
+		private void menuHelp_Click(object sender, EventArgs e)
+		{
+			Process.Start("http://www.selfcoders.com/projects/capture2net");
+		}
+
+		private void menuAbout_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("You are currently using version " + Assembly.GetEntryAssembly().GetName().Version.ToString() + " of Capture2Net.", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 	}
 }

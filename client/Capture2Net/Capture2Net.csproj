@@ -134,6 +134,7 @@
     </Compile>
     <Compile Include="Shortcuts.cs" />
     <Compile Include="SSLChain.cs" />
+    <Compile Include="UpdateCheck.cs" />
     <Compile Include="Uploader.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="ConfigWindow.resx">
@@ -184,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Application.ico" />
+    <None Include="Resources\DownloadUpdateTray.ico" />
     <None Include="Resources\Upload.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
