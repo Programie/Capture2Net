@@ -8,6 +8,8 @@ namespace Capture2Net
 {
 	static class Program
 	{
+		public static Settings settingsInstance;
+		
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
@@ -15,8 +17,10 @@ namespace Capture2Net
 		static void Main(string[] args)
 		{
 			var parameterManagerInstance = new ParameterManager(args);
+			settingsInstance = new Settings();
 			var cloudConfigInstance = new CloudConfig();
 			var shortcutsInstance = new Shortcuts(cloudConfigInstance);
+			settingsInstance.Load();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
@@ -26,7 +30,7 @@ namespace Capture2Net
 			if (uploadFile == null)
 			{
 				var mutex = new Mutex(true, "Capture2Net_Main");
-				if (Properties.Settings.Default.limitToOneInstance)
+				if (settingsInstance.LimitToOneInstance)
 				{
 					if (!mutex.WaitOne(TimeSpan.Zero, true))
 					{
@@ -42,7 +46,7 @@ namespace Capture2Net
 				}
 
 				var configWindow = new ConfigWindow(parameterManagerInstance, cloudConfigInstance, shortcutsInstance);
-				if (Properties.Settings.Default.hostname == "" || Properties.Settings.Default.username == "" || Properties.Settings.Default.password == "")
+				if (settingsInstance.Hostname == "" || settingsInstance.Username == "" || settingsInstance.Password == "")
 				{
 					configWindow.Show();
 				}
@@ -52,7 +56,7 @@ namespace Capture2Net
 					{
 						shortcutsInstance.Register();
 					}
-					if (Properties.Settings.Default.showHiddenBalloonTip)
+					if (settingsInstance.ShowHiddenBalloonTip)
 					{
 						configWindow.showTrayBalloonTip();
 					}

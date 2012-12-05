@@ -27,16 +27,14 @@ namespace Capture2Net
 				ServicePointManager.ServerCertificateValidationCallback = this.CheckSSLCertificate;
 
 				// Initialization
-				var uri = new Uri(Properties.Settings.Default.protocol.ToLower() + "://" + Properties.Settings.Default.hostname + ":" + Properties.Settings.Default.port + Utils.GetValidPath(Properties.Settings.Default.path) + "getconfig.php");
-				var webRequest = (HttpWebRequest)WebRequest.Create(uri);
+				var webRequest = (HttpWebRequest)WebRequest.Create(Program.settingsInstance.Protocol + "://" + Program.settingsInstance.Hostname + ":" + Program.settingsInstance.Port + Program.settingsInstance.Path + "getconfig.php");
 
 				webRequest.Method = "GET";
 				webRequest.UserAgent = "Capture2Net";
 				webRequest.AllowWriteStreamBuffering = true;
 
 				// Set basic authentication credentials
-				var password = ASCIIEncoding.ASCII.GetString(Convert.FromBase64String(Properties.Settings.Default.password));
-				var userPassword = Properties.Settings.Default.username + ":" + password;
+				var userPassword = Program.settingsInstance.Username + ":" + Program.settingsInstance.Password;
 				webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(userPassword)));
 				var response = (HttpWebResponse)webRequest.GetResponse();
 				if (response.StatusCode == HttpStatusCode.OK)

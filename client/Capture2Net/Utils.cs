@@ -8,6 +8,10 @@ namespace Capture2Net
 	{
 		public static string GetValidPath(string path)
 		{
+			if (path == null)
+			{
+				return "/";
+			}
 			if (path.Length == 0 || path.Substring(0, 1) != "/")
 			{
 				path = "/" + path;

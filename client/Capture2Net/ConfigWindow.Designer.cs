@@ -194,7 +194,6 @@
 			// 
 			// Port
 			// 
-			this.Port.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::Capture2Net.Properties.Settings.Default, "port", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
 			this.Port.Location = new System.Drawing.Point(315, 36);
 			this.Port.Maximum = new decimal(new int[] {
             65535,
@@ -209,11 +208,9 @@
 			this.Port.Name = "Port";
 			this.Port.Size = new System.Drawing.Size(57, 20);
 			this.Port.TabIndex = 17;
-			this.Port.Value = global::Capture2Net.Properties.Settings.Default.port;
 			// 
 			// Protocol
 			// 
-			this.Protocol.DataBindings.Add(new System.Windows.Forms.Binding("ValueMember", global::Capture2Net.Properties.Settings.Default, "protocol", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
 			this.Protocol.DisplayMember = "HTTP";
 			this.Protocol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.Protocol.Items.AddRange(new object[] {
@@ -223,42 +220,33 @@
 			this.Protocol.Name = "Protocol";
 			this.Protocol.Size = new System.Drawing.Size(60, 21);
 			this.Protocol.TabIndex = 15;
-			this.Protocol.ValueMember = global::Capture2Net.Properties.Settings.Default.protocol;
 			this.Protocol.SelectedIndexChanged += new System.EventHandler(this.Protocol_SelectedIndexChanged);
 			// 
 			// Username
 			// 
-			this.Username.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Capture2Net.Properties.Settings.Default, "username", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
 			this.Username.Location = new System.Drawing.Point(76, 88);
 			this.Username.Name = "Username";
 			this.Username.Size = new System.Drawing.Size(296, 20);
 			this.Username.TabIndex = 8;
-			this.Username.Text = global::Capture2Net.Properties.Settings.Default.username;
 			// 
 			// Path
 			// 
-			this.Path.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Capture2Net.Properties.Settings.Default, "path", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
 			this.Path.Location = new System.Drawing.Point(76, 62);
 			this.Path.Name = "Path";
 			this.Path.Size = new System.Drawing.Size(296, 20);
 			this.Path.TabIndex = 7;
-			this.Path.Text = global::Capture2Net.Properties.Settings.Default.path;
 			// 
 			// Hostname
 			// 
-			this.Hostname.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Capture2Net.Properties.Settings.Default, "hostname", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
 			this.Hostname.Location = new System.Drawing.Point(142, 35);
 			this.Hostname.Name = "Hostname";
 			this.Hostname.Size = new System.Drawing.Size(160, 20);
 			this.Hostname.TabIndex = 5;
-			this.Hostname.Text = global::Capture2Net.Properties.Settings.Default.hostname;
 			// 
 			// LimitToOneInstance
 			// 
 			this.LimitToOneInstance.AutoSize = true;
-			this.LimitToOneInstance.Checked = global::Capture2Net.Properties.Settings.Default.limitToOneInstance;
 			this.LimitToOneInstance.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.LimitToOneInstance.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Capture2Net.Properties.Settings.Default, "limitToOneInstance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
 			this.LimitToOneInstance.Location = new System.Drawing.Point(15, 153);
 			this.LimitToOneInstance.Name = "LimitToOneInstance";
 			this.LimitToOneInstance.Size = new System.Drawing.Size(123, 17);

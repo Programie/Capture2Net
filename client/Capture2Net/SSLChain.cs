@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -6,7 +10,7 @@ namespace Capture2Net
 {
 	class SSLChain
 	{
-		List<string> keys = new List<string>();
+		List<string> keys;
 		
 		public SSLChain()
 		{
@@ -15,47 +19,32 @@ namespace Capture2Net
 
 		public bool LoadChain()
 		{
-			this.keys.Clear();
-			try
+			if (this.keys != null)
 			{
-				var reader = new XmlTextReader("SSLChain.xml");
-				while (reader.Read())
-				{
-					if (reader.Name == "certificate")
-					{
-						string key = reader.ReadElementContentAsString();
-						if (!this.keys.Contains(key))
-						{
-							this.keys.Add(key);
-						}
-					}
-				}
-				reader.Close();
-				return true;
+				this.keys.Clear();
 			}
-			catch (System.IO.FileNotFoundException)
+			var registryKey = Registry.CurrentUser.OpenSubKey("Software\\Selfcoders\\Capture2Net");
+			if (registryKey == null)
 			{
-				// File not found -> OK, the chain does not exist yet
+				this.keys = new List<string>();
+				return false;
 			}
-			catch (XmlException exception)
+			var data = (string[])registryKey.GetValue("SSLKeyChain");
+			if (data == null)
 			{
-				MessageBox.Show("An error occured while loading the SSL Chain!\n\n\n" + exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.keys = new List<string>();
 			}
-			return false;
+			else
+			{
+				this.keys = new List<string>(data);
+			}
+			return true;
 		}
 
 		public void SaveChain()
 		{
-			var writer = new XmlTextWriter("SSLChain.xml", System.Text.Encoding.UTF8);
-			writer.WriteStartDocument();
-			writer.WriteStartElement("chain");
-			foreach (var key in this.keys)
-			{
-				writer.WriteElementString("certificate", key);
-			}
-			writer.WriteEndElement();
-			writer.WriteEndDocument();
-			writer.Close();
+			var registryKey = Registry.CurrentUser.CreateSubKey("Software\\Selfcoders\\Capture2Net");
+			registryKey.SetValue("SSLKeyChain", this.keys.ToArray(), RegistryValueKind.MultiString);
 		}
 
 		public bool CheckPublicKey(string publicKey)
@@ -79,10 +68,10 @@ namespace Capture2Net
 			this.keys.Add(publicKey);
 		}
 
-		public bool CheckCertificate(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+		public bool CheckCertificate(object sender, X509Certificate certification, X509Chain chain, SslPolicyErrors sslPolicyErrors)
 		{
 			// Check if the certificate is valid
-			if (sslPolicyErrors == System.Net.Security.SslPolicyErrors.None)
+			if (sslPolicyErrors == SslPolicyErrors.None)
 			{
 				return true;
 			}

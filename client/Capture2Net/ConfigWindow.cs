@@ -31,21 +31,24 @@ namespace Capture2Net
 
 		private void Save_Click(object sender, EventArgs e)
 		{
-			if (Properties.Settings.Default.hostname == "" || Properties.Settings.Default.username == "" || this.Password.Text == "")
+			if (this.Hostname.Text == "" || this.Username.Text == "" || this.Password.Text == "")
 			{
 				MessageBox.Show("Hostname, username and password are required fields!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
-			Properties.Settings.Default.protocol = this.Protocol.SelectedItem.ToString();
-
-			Properties.Settings.Default.path = Utils.GetValidPath(Properties.Settings.Default.path);
-			Properties.Settings.Default.password = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Password.Text));
+			Program.settingsInstance.Protocol = (string)this.Protocol.SelectedItem;
+			Program.settingsInstance.Hostname = this.Hostname.Text;
+			Program.settingsInstance.Port = this.Port.Value;
+			Program.settingsInstance.Path = this.Path.Text;
+			Program.settingsInstance.Username = this.Username.Text;
+			Program.settingsInstance.Password = this.Password.Text;
+			Program.settingsInstance.LimitToOneInstance = this.LimitToOneInstance.CheckState == CheckState.Checked;
 
 			if (this.cloudConfigInstance.Load())
 			{
+				Program.settingsInstance.Save();
 				this.shortcutsInstance.Register();
-				Properties.Settings.Default.Save();
 
 				switch (this.StartWithWindows.CheckState)
 				{
@@ -64,21 +67,26 @@ namespace Capture2Net
 
 				this.Hide();
 
-				if (Properties.Settings.Default.showHiddenBalloonTip)
+				if (Program.settingsInstance.ShowHiddenBalloonTip)
 				{
 					this.showTrayBalloonTip();
 				}
 			}
 			else
 			{
-				Properties.Settings.Default.password = "";// Unset password
+				Program.settingsInstance.Password = "";// Unset password
 			}
 		}
 
 		private void ConfigWindow_Load(object sender, EventArgs e)
 		{
-			this.Protocol.SelectedItem = Properties.Settings.Default.protocol;
-			this.Password.Text = ASCIIEncoding.ASCII.GetString(Convert.FromBase64String(Properties.Settings.Default.password));
+			this.Protocol.SelectedItem = Program.settingsInstance.Protocol.ToUpper();
+			this.Hostname.Text = Program.settingsInstance.Hostname;
+			this.Port.Value = Program.settingsInstance.Port;
+			this.Path.Text = Program.settingsInstance.Path;
+			this.Username.Text = Program.settingsInstance.Username;
+			this.Password.Text = Program.settingsInstance.Password;
+			this.LimitToOneInstance.CheckState = Program.settingsInstance.LimitToOneInstance ? CheckState.Checked : CheckState.Unchecked;
 
 			this.StartWithWindows.CheckState = this.IsAutostartEnabled();
 		}
@@ -110,15 +118,15 @@ namespace Capture2Net
 
 		private void ConfigWindow_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (this.closingFromTrayIconMenu || Properties.Settings.Default.hostname == "" || Properties.Settings.Default.username == "" || Properties.Settings.Default.password == "")
+			if (this.closingFromTrayIconMenu || Program.settingsInstance.Hostname == "" || Program.settingsInstance.Username == "" || Program.settingsInstance.Password == "")
 			{
 				Application.Exit();
 				return;
 			}
 			e.Cancel = true;
 			this.Hide();
-			
-			if (Properties.Settings.Default.showHiddenBalloonTip)
+
+			if (Program.settingsInstance.ShowHiddenBalloonTip)
 			{
 				this.showTrayBalloonTip();
 			}
@@ -140,8 +148,8 @@ namespace Capture2Net
 
 		private void trayIcon_BalloonTipClicked(object sender, EventArgs e)
 		{
-			Properties.Settings.Default.showHiddenBalloonTip = false;
-			Properties.Settings.Default.Save();
+			Program.settingsInstance.ShowHiddenBalloonTip = false;
+			Program.settingsInstance.Save();
 		}
 
 		private void trayIconMenu_ShortcutInfo_Click(object sender, EventArgs e)
