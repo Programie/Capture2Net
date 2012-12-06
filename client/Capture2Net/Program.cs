@@ -26,6 +26,11 @@ namespace Capture2Net
 
 			new Mutex(true, "Capture2Net_RunCheck");// Only used for installer to check if Capture2Net is running
 
+			if (parameterManagerInstance.GetParameter("updated") != null)
+			{
+				MessageBox.Show("Capture2Net has been successfully updated to version " + Assembly.GetEntryAssembly().GetName().Version.ToString() + ".", "Capture2Net Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
+
 			var uploadFile = parameterManagerInstance.GetParameter("upload");
 			if (uploadFile == null)
 			{

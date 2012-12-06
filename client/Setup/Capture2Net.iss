@@ -62,12 +62,15 @@ begin
 
 	dotNetInstalled := RegQueryDWordValue(HKLM, key, 'Release', release);
 	dotNetInstalled := dotNetInstalled and (release >= 378389);
-	if not dotNetInstalled then begin
+	if not dotNetInstalled then
+	begin
 		MsgBox('Capture2Net requires .NET Framework 4.5 which is currently not installed.'#13#13'This installer will now open the download page of .NET Framework 4.5 in your browser.'#13#13'Download and install it and try to install Capture2Net again.', mbError, MB_OK);
-		ShellExec('open', 'http://www.microsoft.com/download/details.aspx?id=30653', '', '', SW_SHOWNORMAL, ewNoWait, errorCode);
+		ShellExecAsOriginalUser('open', 'http://www.microsoft.com/download/details.aspx?id=30653', '', '', SW_SHOWNORMAL, ewNoWait, errorCode);
 		result := false;
 	end else
+	begin
 		result := true;
+	end;
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
@@ -75,8 +78,41 @@ begin
 	if CurUninstallStep = usPostUninstall then
 	begin
 		if RegKeyExists(HKEY_CURRENT_USER, 'Software\SelfCoders\Capture2Net') then
+		begin
 			if MsgBox('Do you want to remove your Capture2Net configuration?', mbConfirmation, MB_YESNO) = IDYES then
+			begin
 				RegDeleteKeyIncludingSubkeys(HKEY_CURRENT_USER, 'Software\SelfCoders\Capture2Net');
 				RegDeleteKeyIfEmpty(HKEY_CURRENT_USER, 'Software\SelfCoders');
+			end;
+		end;
+	end;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+	isSilent, isUpdate: boolean;
+	errorCode, index: integer;
+begin
+	if CurStep = ssDone then
+	begin
+		for index:=1 to ParamCount do
+		begin
+			if uppercase(ParamStr(index))='/SILENT' then
+			begin
+				isSilent := true;
+			end;
+			if uppercase(ParamStr(index))='/VERYSILENT' then
+			begin
+				isSilent := true;
+			end;
+			if uppercase(ParamStr(index))='/UPDATE' then
+			begin
+				isUpdate := true;
+			end;
+		end;
+		if isSilent and isUpdate then
+		begin
+			ExecAsOriginalUser(ExpandConstant('{app}\{#MainExecutable}'), '/updated', '', SW_SHOWNORMAL, ewNoWait, errorCode);
+		end;
 	end;
 end;

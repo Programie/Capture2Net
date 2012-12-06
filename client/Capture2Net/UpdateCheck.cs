@@ -88,7 +88,7 @@ namespace Capture2Net
 					File.Move(tempFile, tempFile + ".exe");
 					tempFile += ".exe";
 
-					Process.Start(tempFile, "\"/DIR=" + System.IO.Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]) + "\" /NOICONS");
+					Process.Start(tempFile, "\"/DIR=" + System.IO.Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]) + "\" /NOICONS /SILENT /UPDATE");
 					
 					this.doExit = true;
 				}
