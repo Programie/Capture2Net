@@ -150,7 +150,7 @@ namespace Capture2Net
 			this.Port = Convert.ToDecimal(key.GetValue("Port", 80));
 			this.Path = (string)key.GetValue("Path", "/");
 			this.Username = (string)key.GetValue("Username");
-			this.Password = ASCIIEncoding.ASCII.GetString(Convert.FromBase64String((string)key.GetValue("Password")));
+			this.Password = ASCIIEncoding.ASCII.GetString(Convert.FromBase64String((string)key.GetValue("Password", "")));
 			this.LimitToOneInstance = Convert.ToBoolean(key.GetValue("LimitToOneInstance", true));
 			this.ShowHiddenBalloonTip = Convert.ToBoolean(key.GetValue("ShowHiddenBalloonTip", true));
 		}

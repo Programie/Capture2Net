@@ -1,27 +1,28 @@
 ; Build target "Release" using Visual Studio before building setup!
 
-#define MyAppName "Capture2Net"
-#define MyAppVersion "2.0"
-#define MyAppPublisher "SelfCoders"
-#define MyAppURL "http://www.selfcoders.com/projects/capture2net"
-#define MyAppExeName "Capture2Net.exe"
+#define ApplicationName "Capture2Net"
+#define ProjectURL "http://www.selfcoders.com/projects/capture2net"
+#define MainExecutable "Capture2Net.exe"
+#define Version GetFileVersion("..\Capture2Net\bin\Release\Capture2Net.exe")
 
 [Setup]
 AppId={{578D140E-5FD1-48B4-957E-4EDD7833FB13}
-AppName={#MyAppName}
-AppVersion={#MyAppVersion}
-AppPublisher={#MyAppPublisher}
+AppName={#ApplicationName}
+AppVersion={#Version}
+AppPublisher="SelfCoders"
 AppPublisherURL="http://www.selfcoders.com"
-AppSupportURL={#MyAppURL}
-AppUpdatesURL={#MyAppURL}
+AppSupportURL={#ProjectURL}
+AppUpdatesURL={#ProjectURL}
 DefaultDirName={pf}\SelfCoders\Capture2Net
-DefaultGroupName={#MyAppName}
+DefaultGroupName={#ApplicationName}
 AllowNoIcons=yes
 InfoBeforeFile=Readme-BeforeSetup.txt
+OutputDir=.
 OutputBaseFilename=Capture2Net_Setup
 Compression=lzma
 SolidCompression=yes
 AppMutex=Capture2Net_RunCheck
+UninstallDisplayIcon={app}\{#MainExecutable}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -31,18 +32,23 @@ Source: "..\Capture2Net\bin\Release\Capture2Net.exe"; DestDir: "{app}"; Flags: i
 Source: "..\Capture2Net\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
-Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
+Name: "{group}\{#ApplicationName}"; Filename: "{app}\{#MainExecutable}"
+Name: "{group}\{cm:ProgramOnTheWeb,{#ApplicationName}}"; Filename: "{#ProjectURL}"
+Name: "{group}\{cm:UninstallProgram,{#ApplicationName}}"; Filename: "{uninstallexe}"
 
 [Tasks]
+Name: resetConfiguration; Description: "Reset configuration"; Flags: checkedonce unchecked
 Name: startWithWindows; Description: "&Start with Windows"
 
 [Registry]
-Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Capture2Net"; ValueData: """{app}\Capture2Net.exe"""; Tasks:startWithWindows; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "Software\SelfCoders\Capture2Net"; Tasks: resetConfiguration; Flags: deletekey
+Root: HKCU; Subkey: "Software\SelfCoders\Capture2Net"; Flags: uninsdeletekeyifempty
+Root: HKCU; Subkey: "Software\SelfCoders"; Flags: uninsdeletekeyifempty
+Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Capture2Net"; ValueData: """{app}\{#MainExecutable}"""; Tasks:startWithWindows; Flags: uninsdeletevalue
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{#ProjectURL}"; Description: "Show help"; Flags: nowait postinstall skipifsilent shellexec
+Filename: "{app}\{#MainExecutable}"; Description: "Launch application"; Flags: nowait postinstall skipifsilent
 
 [Code]
 function InitializeSetup(): Boolean;
@@ -62,4 +68,15 @@ begin
 		result := false;
 	end else
 		result := true;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+	if CurUninstallStep = usPostUninstall then
+	begin
+		if RegKeyExists(HKEY_CURRENT_USER, 'Software\SelfCoders\Capture2Net') then
+			if MsgBox('Do you want to remove your Capture2Net configuration?', mbConfirmation, MB_YESNO) = IDYES then
+				RegDeleteKeyIncludingSubkeys(HKEY_CURRENT_USER, 'Software\SelfCoders\Capture2Net');
+				RegDeleteKeyIfEmpty(HKEY_CURRENT_USER, 'Software\SelfCoders');
+	end;
 end;
