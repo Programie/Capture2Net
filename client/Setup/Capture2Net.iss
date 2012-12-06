@@ -23,6 +23,7 @@ Compression=lzma
 SolidCompression=yes
 AppMutex=Capture2Net_RunCheck
 UninstallDisplayIcon={app}\{#MainExecutable}
+UninstallDisplayName={#ApplicationName}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -38,7 +39,7 @@ Name: "{group}\{cm:UninstallProgram,{#ApplicationName}}"; Filename: "{uninstalle
 
 [Tasks]
 Name: resetConfiguration; Description: "Reset configuration"; Flags: checkedonce unchecked
-Name: startWithWindows; Description: "&Start with Windows"
+Name: startWithWindows; Description: "Start with Windows"
 
 [Registry]
 Root: HKCU; Subkey: "Software\SelfCoders\Capture2Net"; Tasks: resetConfiguration; Flags: deletekey
