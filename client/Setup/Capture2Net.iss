@@ -1,5 +1,7 @@
 ; Build target "Release" using Visual Studio before building setup!
 
+#include "itdownload.iss"
+
 #define ApplicationName "Capture2Net"
 #define ProjectURL "http://www.selfcoders.com/projects/capture2net"
 #define MainExecutable "Capture2Net.exe"
@@ -38,6 +40,7 @@ Name: "{group}\{cm:ProgramOnTheWeb,{#ApplicationName}}"; Filename: "{#ProjectURL
 Name: "{group}\{cm:UninstallProgram,{#ApplicationName}}"; Filename: "{uninstallexe}"
 
 [Tasks]
+Name: installDotNetFramework45; Description: "Install .NET Framework 4.5"
 Name: resetConfiguration; Description: "Reset configuration"; Flags: checkedonce unchecked
 Name: startWithWindows; Description: "Start with Windows"
 
@@ -51,22 +54,53 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 Filename: "{#ProjectURL}"; Description: "Show help"; Flags: nowait postinstall skipifsilent shellexec
 Filename: "{app}\{#MainExecutable}"; Description: "Launch application"; Flags: nowait postinstall skipifsilent
 
-[Code]
-function InitializeSetup(): Boolean;
-var
-	errorCode: integer;
-	key: string;
-	release: cardinal;
-	dotNetInstalled: boolean;
-begin
-	key := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full';
 
-	dotNetInstalled := RegQueryDWordValue(HKLM, key, 'Release', release);
-	dotNetInstalled := dotNetInstalled and (release >= 378389);
+[Code]
+var
+	dotNetInstalled: boolean;
+
+function CheckPendingReboot(): boolean;
+var
+	names: String;
+begin
+	if (RegQueryMultiStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager', 'PendingFileRenameOperations', names)) then
+	begin
+		result := true;
+	end else
+	begin
+		if ((RegQueryMultiStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager', 'SetupExecute', names)) and (names <> '')) then
+		begin
+			result := true;
+		end else
+		begin
+			result := false;
+		end;
+	end;
+end;
+
+procedure InitializeWizard();
+begin
 	if not dotNetInstalled then
 	begin
-		MsgBox('Capture2Net requires .NET Framework 4.5 which is currently not installed.'#13#13'This installer will now open the download page of .NET Framework 4.5 in your browser.'#13#13'Download and install it and try to install Capture2Net again.', mbError, MB_OK);
-		ShellExecAsOriginalUser('open', 'http://www.microsoft.com/download/details.aspx?id=30653', '', '', SW_SHOWNORMAL, ewNoWait, errorCode);
+		itd_init();
+		itd_addfile('http://download.microsoft.com/download/B/A/4/BA4A7E71-2906-4B2D-A0E1-80CF16844F5F/dotNetFx45_Full_setup.exe', ExpandConstant('{tmp}\dotNetFx45_Full_setup.exe'));
+		itd_downloadafter(wpReady);
+		MsgBox('Capture2Net requires .NET Framework 4.5 which is currently not installed.'#13#13'This installer will download and install it automatically while installing Capture2Net.', mbError, MB_OK);
+	end;
+end;
+
+function InitializeSetup(): boolean;
+var
+	release: cardinal;
+begin
+	dotNetInstalled := RegQueryDWordValue(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full', 'Release', release);
+	if dotNetInstalled and (release >= 378389) then
+	begin
+		dotNetInstalled := true;
+	end;
+	if not dotNetInstalled and CheckPendingReboot() then
+	begin
+		MsgBox('A reboot is currently pending.'#13#13'Please reboot your computer before continuing!', mbError, MB_OK);
 		result := false;
 	end else
 	begin
@@ -89,31 +123,48 @@ begin
 	end;
 end;
 
+procedure CurPageChanged(CurPageID: Integer);
+begin
+	if CurPageID = wpSelectTasks then
+	begin
+		WizardForm.TasksList.Checked[0] := not dotNetInstalled;
+		WizardForm.TasksList.ItemEnabled[0] := false;
+	end;
+end;
 procedure CurStepChanged(CurStep: TSetupStep);
 var
 	isSilent, isUpdate: boolean;
 	errorCode, index: integer;
 begin
-	if CurStep = ssDone then
+	if CurStep = ssInstall then
 	begin
-		for index:=1 to ParamCount do
+		if not dotNetInstalled then
 		begin
-			if uppercase(ParamStr(index))='/SILENT' then
-			begin
-				isSilent := true;
-			end;
-			if uppercase(ParamStr(index))='/VERYSILENT' then
-			begin
-				isSilent := true;
-			end;
-			if uppercase(ParamStr(index))='/UPDATE' then
-			begin
-				isUpdate := true;
-			end;
+			Exec(ExpandConstant('{tmp}\dotNetFx45_Full_setup.exe'), '', '', SW_SHOWNORMAL, ewWaitUntilTerminated, errorCode);
 		end;
-		if isSilent and isUpdate then
+	end else
+	begin
+		if CurStep = ssDone then
 		begin
-			ExecAsOriginalUser(ExpandConstant('{app}\{#MainExecutable}'), '/updated', '', SW_SHOWNORMAL, ewNoWait, errorCode);
+			for index:=1 to ParamCount do
+			begin
+				if uppercase(ParamStr(index))='/SILENT' then
+				begin
+					isSilent := true;
+				end;
+				if uppercase(ParamStr(index))='/VERYSILENT' then
+				begin
+					isSilent := true;
+				end;
+				if uppercase(ParamStr(index))='/UPDATE' then
+				begin
+					isUpdate := true;
+				end;
+			end;
+			if isSilent and isUpdate then
+			begin
+				ExecAsOriginalUser(ExpandConstant('{app}\{#MainExecutable}'), '/updated', '', SW_SHOWNORMAL, ewNoWait, errorCode);
+			end;
 		end;
 	end;
 end;
