@@ -31,7 +31,7 @@ namespace Capture2Net
 		{
 			NativeMethods.RECT windowRect = new NativeMethods.RECT();
 			NativeMethods.GetWindowRect(handle, ref windowRect);
-			return this.Capture(handle, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
+			return this.Capture(NativeMethods.GetDesktopWindow(), windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
 		}
 
 		/// <summary>
