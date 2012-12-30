@@ -194,7 +194,7 @@ namespace Capture2Net
 
 		private void menuHelp_Click(object sender, EventArgs e)
 		{
-			Process.Start("http://www.selfcoders.com/projects/capture2net");
+			Process.Start("http://selfcoders.com/projects/capture2net/help");
 		}
 
 		private void menuAbout_Click(object sender, EventArgs e)
