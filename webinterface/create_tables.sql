@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS `screenshots`
 	`activeWindow` text NOT NULL,
 	`userName` varchar(256) NOT NULL,
 	`hostName` varchar(15) NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `fileName` (`fileName`)
 );
 
 CREATE TABLE IF NOT EXISTS `users`
@@ -16,7 +17,8 @@ CREATE TABLE IF NOT EXISTS `users`
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`userName` varchar(50) NOT NULL,
 	`password` varchar(32) NOT NULL,
-	`sessionId` varchar(32) NOT NULL,
+	`sessionId` varchar(32) NOT NULL DEFAULT '',
+	`isAdmin` tinyint(1) NOT NULL DEFAULT '0',
 	`configData` text NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `userName` (`userName`)

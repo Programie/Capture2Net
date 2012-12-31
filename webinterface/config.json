@@ -32,7 +32,7 @@
 		"translation"
 	],
 	
-	"default-job" : "source-hybrid",
+	"default-job" : "source",
 
 	"let" :
 	{
@@ -64,6 +64,7 @@
 				[
 					"includes",
 					"getconfig.php",
+					"resource",
 					"rpc.php",
 					"upload.php"
 				]

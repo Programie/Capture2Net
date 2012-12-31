@@ -28,7 +28,7 @@ if (!method_exists($rpcHandler, $jsonData->method))
 }
 
 // Check if the user is logged in
-if ($json->method != "login" and !$rpcHandler->checkLogin(null))
+if ($jsonData->method != "login" and !$rpcHandler->checkLogin(null))
 {
 	die(json_encode(array
 	(
@@ -39,7 +39,7 @@ if ($json->method != "login" and !$rpcHandler->checkLogin(null))
 }
 
 // Call the method
-$returnData = $rpcHandler->{$jsonData->method}($jsonData->params);
+$returnData = $rpcHandler->{$jsonData->method}($jsonData->params[0]);
 
 echo json_encode(array
 (

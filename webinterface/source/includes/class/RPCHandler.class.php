@@ -9,6 +9,7 @@ class RPCHandler
 {
 	private $pdo;
 	private $userId;
+	private $isAdmin;
 	
 	public function __construct()
 	{
@@ -27,7 +28,7 @@ class RPCHandler
 	
 	public function checkLogin($params)
 	{
-		$query = $this->pdo->prepare("SELECT `id` FROM `users` WHERE `sessionId` = :sessionId");
+		$query = $this->pdo->prepare("SELECT `id`, `isAdmin` FROM `users` WHERE `sessionId` = :sessionId");
 		$query->execute(array
 		(
 			":sessionId" => $_COOKIE["sessionId"]
@@ -38,7 +39,27 @@ class RPCHandler
 			return false;
 		}
 		$this->userId = $row->id;
+		$this->isAdmin = $row->isAdmin;
 		return true;
+	}
+	
+	public function getScreenshots($params)
+	{
+		$query = $this->pdo->prepare("SELECT * FROM `screenshots` WHERE `userId` = :userId");
+		$query->execute(array
+		(
+			":userId" => $this->userId
+		));
+		return array
+		(
+			"url" => UPLOAD_URL,
+			"screenshots" => $query->fetchAll()
+		);
+	}
+	
+	public function isAdmin()
+	{
+		return $this->isAdmin;
 	}
 	
 	public function loadConfig()
@@ -49,6 +70,10 @@ class RPCHandler
 			":id" => $this->id
 		));
 		$row = $query->fetch();
+		if (!$row->configData)
+		{
+			return array("_jsonBugFix" => true);
+		}
 		return json_decode($row->configData);
 	}
 	

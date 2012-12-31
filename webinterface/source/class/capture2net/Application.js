@@ -5,11 +5,6 @@ qx.Class.define("capture2net.Application",
 {
 	extend : qx.application.Standalone,
 	
-	events :
-	{
-		configLoaded : "qx.event.type.Data"
-	},
-	
 	members :
 	{
 		/**
@@ -29,20 +24,53 @@ qx.Class.define("capture2net.Application",
 				qx.log.appender.Console;
 			}
 			
-			// Register event listeners
-			this.addListener("loadConfig", this.configLoaded, this);
+			// Set blocker data
+			this.getRoot().set(
+			{
+				blockerColor : "#000000",
+				blockerOpacity : 0.5
+			});
+			
+			// Initialize static views
+			capture2net.view.dialogbox.Main.createWindow(this);
+			
+			var data =
+			{
+				type : "alertBox",
+				title : "Test confirm box",
+				icon : "warning",
+				text : "Are you sure to do nothing?",
+				acceptButton : "Yes",
+				declineButton : "No"
+			};
+			capture2net.view.dialogbox.Main.show(data);
 			
 			// Try to load the configuration
-			capture2net.services.RPC.callMethod("loadConfig", this, "configLoaded");
+			capture2net.services.RPC.callMethod("loadConfig", this, this.configLoaded, [[], "login_required"]);
 		},
 		
 		/**
 		 * This method gets called as soon as the loadConfig call returns
 		 */
-		configLoaded : function(event)
+		configLoaded : function(result)
 		{
-			var result = event.getData();
-			alert(result);
+			var container = new qx.ui.container.Composite();
+			container.setLayout(new qx.ui.layout.VBox);
+			
+			var headerContainer = new qx.ui.container.Composite();
+			headerContainer.setLayout(new qx.ui.layout.VBox);
+			headerContainer.setPadding(10);
+			headerContainer.setDecorator("app-header");
+			var headerText = new qx.ui.basic.Label("Capture2Net Webinterface");
+			headerText.setFont(new qx.bom.Font(22, ["JosefinSlab", "serif"]));
+			headerText.setTextColor("#FFFFFF");
+			headerContainer.add(headerText);
+			container.add(headerContainer);
+			
+			var panel = new capture2net.view.panel.Main();
+			container.add(panel, {flex : 1});
+			
+			this.getRoot().add(container, {edge : 0});
 		}
 	}
 });
