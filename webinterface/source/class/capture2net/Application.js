@@ -34,17 +34,6 @@ qx.Class.define("capture2net.Application",
 			// Initialize static views
 			capture2net.view.dialogbox.Main.createWindow(this);
 			
-			var data =
-			{
-				type : "alertBox",
-				title : "Test confirm box",
-				icon : "warning",
-				text : "Are you sure to do nothing?",
-				acceptButton : "Yes",
-				declineButton : "No"
-			};
-			capture2net.view.dialogbox.Main.show(data);
-			
 			// Try to load the configuration
 			capture2net.services.RPC.callMethod("loadConfig", this, this.configLoaded, [[], "login_required"]);
 		},
