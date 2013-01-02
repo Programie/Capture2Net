@@ -103,9 +103,21 @@ namespace Capture2Net
 			}
 			if (keyData == Keys.Enter)
 			{
-				this.accepted = true;
-				this.Close();
-				return true;
+				if (this.cropArea.Width == 0 || this.cropArea.Height == 0)
+				{
+					if (MessageBox.Show("Can not capture a screenshot with a width or height of zero pixels!", "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) != System.Windows.Forms.DialogResult.Retry)
+					{
+						this.accepted = false;
+						this.Close();
+						return true;
+					}
+				}
+				else
+				{
+					this.accepted = true;
+					this.Close();
+					return true;
+				}
 			}
 			return base.ProcessCmdKey(ref msg, keyData);
 		}

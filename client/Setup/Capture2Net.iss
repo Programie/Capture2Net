@@ -3,7 +3,7 @@
 #include "itdownload.iss"
 
 #define ApplicationName "Capture2Net"
-#define ProjectURL "http://www.selfcoders.com/projects/capture2net"
+#define ProjectURL "http://selfcoders.com/projects/capture2net"
 #define MainExecutable "Capture2Net.exe"
 #define Version GetFileVersion("..\Capture2Net\bin\Release\Capture2Net.exe")
 
@@ -51,7 +51,7 @@ Root: HKCU; Subkey: "Software\SelfCoders"; Flags: uninsdeletekeyifempty
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "Capture2Net"; ValueData: """{app}\{#MainExecutable}"""; Tasks:startWithWindows; Flags: uninsdeletevalue
 
 [Run]
-Filename: "{#ProjectURL}"; Description: "Show help"; Flags: nowait postinstall skipifsilent shellexec
+Filename: "{#ProjectURL}/help"; Description: "Show help"; Flags: nowait postinstall skipifsilent shellexec
 Filename: "{app}\{#MainExecutable}"; Description: "Launch application"; Flags: nowait postinstall skipifsilent
 
 
