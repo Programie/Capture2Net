@@ -83,28 +83,42 @@ qx.Class.define("capture2net.view.panel.ScreenshotManager",
 			tableModel.setColumns(columns.titles, columns.names);
 			this._table = new qx.ui.table.Table(tableModel);
 			
+			this._table.setShowCellFocusIndicator(false);
+			
 			this._table.addListener("cellDblclick", function(event)
 			{
 				var rowData = this._table.getTableModel().getRowDataAsMap(event.getRow());
 				var newUrl = this._url + "/" + rowData.fileName;
 				qx.io.ImageLoader.abort(this._previewArea.url);
+				this._previewArea.imageInfoContainer.removeAll();
+				this._previewArea.imageInfoContainer.add(new qx.ui.basic.Image("resource/capture2net/loading.gif"), {column: 0, row: 0});
 				qx.io.ImageLoader.load(newUrl, function(url, data)
 				{
-					this._previewArea.url = url;
-					this._previewArea.info = data;
-					this._previewArea.image.setSource(url);
-					
-					// Show image info
-					this._previewArea.imageInfoContainer.removeAll();
-					var row = 0;
-					this._previewArea.imageInfoContainer.add(new qx.ui.basic.Label("Filename:"), {column : 0, row : row});
-					this._previewArea.imageInfoContainer.add(new qx.ui.basic.Label(rowData.fileName), {column : 1, row : row});
-					row++;
-					this._previewArea.imageInfoContainer.add(new qx.ui.basic.Label("Original size:"), {column : 0, row : row});
-					this._previewArea.imageInfoContainer.add(new qx.ui.basic.Label(data.width + " x " + data.height), {column : 1, row : row});
-					row++;
-					
-					this.updatePreviewImageSize();
+					if (qx.io.ImageLoader.isLoaded(newUrl))
+					{
+						this._previewArea.url = url;
+						this._previewArea.info = data;
+						this._previewArea.image.setSource(url);
+						
+						// Show image info
+						this._previewArea.imageInfoContainer.removeAll();
+						var row = 0;
+						this._previewArea.imageInfoContainer.add(new qx.ui.basic.Label("Filename:"), {column : 0, row : row});
+						var fileNameLabel = new qx.ui.basic.Label("<a href='" + url + "' target='_blank'>" + rowData.fileName + "</a>");
+						fileNameLabel.setRich(true);
+						this._previewArea.imageInfoContainer.add(fileNameLabel, {column : 1, row : row});
+						row++;
+						this._previewArea.imageInfoContainer.add(new qx.ui.basic.Label("Original size:"), {column : 0, row : row});
+						this._previewArea.imageInfoContainer.add(new qx.ui.basic.Label(data.width + " x " + data.height), {column : 1, row : row});
+						row++;
+						
+						this.updatePreviewImageSize();
+					}
+					else
+					{
+						this._previewArea.imageInfoContainer.removeAll();
+						this._previewArea.imageInfoContainer.add(new qx.ui.basic.Label("Loading failed!"), {column: 0, row: 0});
+					}
 				}, this);
 			}, this);
 			

@@ -6,6 +6,7 @@ qx.Class.define("capture2net.view.dialogbox.Main",
 	{
 		_currentItem : null,
 		_queue : [],
+		_subInstance : null,
 		_window : null,
 		
 		acceptAction : function(data)
@@ -34,6 +35,8 @@ qx.Class.define("capture2net.view.dialogbox.Main",
 				showMaximize : false,
 				showMinimize : false
 			});
+			this._window.addListener("keypress", this.processKeypress, this);
+			applicationMain.getRoot().addListener("resize", this.tryCenter, this);
 			applicationMain.getRoot().add(this._window);
 		},
 		
@@ -45,6 +48,26 @@ qx.Class.define("capture2net.view.dialogbox.Main",
 				this._currentItem.actionFunction.call(this._currentItem.caller, false);
 			}
 			this.processQueue();
+		},
+		
+		processKeypress : function(event)
+		{
+			var key = event.getKeyIdentifier();
+			
+			if (!this._subInstance)
+			{
+				return;
+			}
+			
+			switch (key)
+			{
+				case "Enter":
+					this._subInstance.triggerAccept();
+					break;
+				case "Escape":
+					this._subInstance.triggerDecline();
+					break;
+			}
 		},
 		
 		processQueue : function()
@@ -66,16 +89,17 @@ qx.Class.define("capture2net.view.dialogbox.Main",
 			this._window.setCaption(this._currentItem.title);
 			
 			// Create window content specified by type and additional data
+			this._subInstance = null;
 			switch (this._currentItem.type)
 			{
 				case "alert":
-					new capture2net.view.dialogbox.AlertBox(this);
+					this._subInstance = new capture2net.view.dialogbox.AlertBox(this);
 					break;
 				case "form":
-					new capture2net.view.dialogbox.Form(this);
+					this._subInstance = new capture2net.view.dialogbox.Form(this);
 					break;
 				case "prompt":
-					new capture2net.view.dialogbox.PromptBox(this);
+					this._subInstance = new capture2net.view.dialogbox.PromptBox(this);
 					break;
 				default:
 					// Invalid type
@@ -93,6 +117,14 @@ qx.Class.define("capture2net.view.dialogbox.Main",
 		{
 			this._queue.push(data);
 			this.processQueue();
+		},
+		
+		tryCenter : function()
+		{
+			if (this._window.isVisible())
+			{
+				this._window.center();
+			}
 		}
 	}
 });

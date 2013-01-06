@@ -100,5 +100,15 @@ class RPCHandler
 		setcookie("sessionId", $sessionId);
 		return RETURN_OK;
 	}
+	
+	public function logout($params)
+	{
+		setcookie("sessionId", "", time() - 3600);
+		$query = $this->pdo->prepare("UPDATE `users` SET `sessionId` = '' WHERE `id` = :id");
+		$query->execute(array
+		(
+			":id" => $this->userId
+		));
+	}
 }
 ?>

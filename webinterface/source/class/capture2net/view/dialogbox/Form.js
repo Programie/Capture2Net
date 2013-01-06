@@ -4,23 +4,24 @@ qx.Class.define("capture2net.view.dialogbox.Form",
 	
 	construct : function(parent)
 	{
-		var data = parent._currentItem;
-		var icon = data.icon;
+		this._parent = parent;
+		this._data = this._parent._currentItem;
+		var icon = this._data.icon;
 		if (icon)
 		{
-			icon = "resource/capture2net/dialogBox/" + icon + ".png";
+			icon = "resource/capture2net/icons/dialogBox/" + icon + ".png";
 		}
-		var text = new qx.ui.basic.Atom(data.text, icon);
+		var text = new qx.ui.basic.Atom(this._data.text, icon);
 		text.setRich(true);
 		text.setPadding(5);
-		parent._window.add(text);
+		this._parent._window.add(text);
 		
-		if (data.formFields)
+		if (this._data.formFields)
 		{
 			var form = new qx.ui.form.Form();
-			for (var formFieldIndex in data.formFields)
+			for (var formFieldIndex in this._data.formFields)
 			{
-				var formField = data.formFields[formFieldIndex];
+				var formField = this._data.formFields[formFieldIndex];
 				switch (formField.type)
 				{
 					case "checkBox":
@@ -41,22 +42,37 @@ qx.Class.define("capture2net.view.dialogbox.Form",
 			}
 			var formRenderer = new qx.ui.form.renderer.Single(form);
 			formRenderer.setMargin(10);
-			parent._window.add(formRenderer);
+			this._parent._window.add(formRenderer);
 		}
 		
 		var buttonContainer = new qx.ui.container.Composite();
 		var buttonContainerLayout = new qx.ui.layout.HBox(10);
-		buttonContainerLayout.setAlignX(data.buttonAlign ? data.buttonAlign : "right");
+		buttonContainerLayout.setAlignX(this._data.buttonAlign ? this._data.buttonAlign : "right");
 		buttonContainer.setLayout(buttonContainerLayout);
 		
-		var acceptButton = new qx.ui.form.Button(data.acceptButton ? data.acceptButton : "OK");
-		acceptButton.addListener("execute", function()
+		var acceptButton = new qx.ui.form.Button(this._data.acceptButton ? this._data.acceptButton : "OK");
+		acceptButton.addListener("execute", this.triggerAccept, this);
+		buttonContainer.add(acceptButton);
+		
+		if (this._data.declineButton)
+		{
+			var declineButton = new qx.ui.form.Button(this._data.declineButton);
+			declineButton.addListener("execute", this.triggerDecline, this);
+			buttonContainer.add(declineButton);
+		}
+		
+		this._parent._window.add(buttonContainer);
+	},
+	
+	members :
+	{
+		triggerAccept : function()
 		{
 			var error = false;
 			var values = {};
-			for (var formFieldIndex in data.formFields)
+			for (var formFieldIndex in this._data.formFields)
 			{
-				var formField = data.formFields[formFieldIndex];
+				var formField = this._data.formFields[formFieldIndex];
 				if (formField.field)
 				{
 					if (formField.required && !formField.field.getValue())
@@ -74,21 +90,16 @@ qx.Class.define("capture2net.view.dialogbox.Form",
 			}
 			if (!error)
 			{
-				parent.acceptAction(values);
+				this._parent.acceptAction(values);
 			}
-		}, this);
-		buttonContainer.add(acceptButton);
+		},
 		
-		if (data.declineButton)
+		triggerDecline : function()
 		{
-			var declineButton = new qx.ui.form.Button(data.declineButton);
-			declineButton.addListener("execute", function()
+			if (this._data.declineButton)
 			{
-				parent.acceptAction();
-			}, this);
-			buttonContainer.add(declineButton);
+				this._parent.declineAction();
+			}
 		}
-		
-		parent._window.add(buttonContainer);
 	}
 });

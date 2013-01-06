@@ -31,7 +31,7 @@ qx.Class.define("capture2net.services.RPC",
 			{
 				if (accepted)
 				{
-					capture2net.services.RPC.callMethod("login", this, this.loginDone, ["ok", "login_failed"], data);
+					capture2net.services.RPC.callMethod("login", this, capture2net.services.RPC.loginDone, ["ok", "login_failed"], data);
 				}
 			}
 		},
@@ -44,10 +44,25 @@ qx.Class.define("capture2net.services.RPC",
 				switch (result)
 				{
 					case "forbidden":
-						alert("You do not have the permission to use this function!");
+						var dialogData =
+						{
+							type : "alert",
+							title : "Permission denied",
+							text : "You do not have the permission to use this function!",
+							icon : "error"
+						};
+						capture2net.view.dialogbox.Main.show(dialogData);
 						break;
 					case "login_required":
 						thisClass._loginDialogData.caller = thisClass;
+						thisClass._loginDialogData.callAfterSuccessfulLogin =
+						{
+							caller : thisClass,
+							method : function()
+							{
+								capture2net.services.RPC.callMethod(method, caller, callbackFunction, validReturnValues, params);
+							}
+						};
 						capture2net.view.dialogbox.Main.show(thisClass._loginDialogData);
 						break;
 					default:
@@ -112,12 +127,15 @@ qx.Class.define("capture2net.services.RPC",
 		/**
 		 * This method gets called as soon as the user logged in (Returns 'ok" if the login was successful or "login_failed" if the login failed)
 		 */
-		loginDone :function(result)
+		loginDone : function(result)
 		{
 			switch (result)
 			{
 				case "ok":
-					// Login OK
+					if (this._loginDialogData.callAfterSuccessfulLogin)
+					{
+						this._loginDialogData.callAfterSuccessfulLogin.method.call(this._loginDialogData.callAfterSuccessfulLogin.caller);
+					}
 					break;
 				case "login_failed":
 					var data =
