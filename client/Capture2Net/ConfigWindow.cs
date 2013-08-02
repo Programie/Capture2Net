@@ -17,6 +17,7 @@ namespace Capture2Net
 		Shortcuts shortcutsInstance;
 		ShortcutInfo shortcutInfoForm;
 		RegistryKey autostartRegistryKey;
+		PendingUploads pendingUploadsInstance;
 
 		public ConfigWindow(ParameterManager parameterManagerInstance, CloudConfig cloudConfigInstance, Shortcuts shortcutsInstance)
 		{
@@ -44,6 +45,7 @@ namespace Capture2Net
 			Program.settingsInstance.Username = this.Username.Text;
 			Program.settingsInstance.Password = this.Password.Text;
 			Program.settingsInstance.LimitToOneInstance = this.LimitToOneInstance.CheckState == CheckState.Checked;
+			Program.settingsInstance.CheckUpdatesOnStart = this.CheckUpdatesOnStart.CheckState == CheckState.Checked;
 
 			if (this.cloudConfigInstance.Load())
 			{
@@ -87,6 +89,7 @@ namespace Capture2Net
 			this.Username.Text = Program.settingsInstance.Username;
 			this.Password.Text = Program.settingsInstance.Password;
 			this.LimitToOneInstance.CheckState = Program.settingsInstance.LimitToOneInstance ? CheckState.Checked : CheckState.Unchecked;
+			this.CheckUpdatesOnStart.CheckState = Program.settingsInstance.CheckUpdatesOnStart ? CheckState.Checked : CheckState.Unchecked;
 
 			this.StartWithWindows.CheckState = this.IsAutostartEnabled();
 		}
@@ -200,6 +203,25 @@ namespace Capture2Net
 		private void menuAbout_Click(object sender, EventArgs e)
 		{
 			MessageBox.Show("You are currently using version " + Assembly.GetEntryAssembly().GetName().Version.ToString() + " of Capture2Net.", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+
+		private void menuShowPendingUploads_Click(object sender, EventArgs e)
+		{
+			if (this.pendingUploadsInstance == null)
+			{
+				this.pendingUploadsInstance = new PendingUploads();
+				this.pendingUploadsInstance.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PendingUploads_FormClosed);
+				this.pendingUploadsInstance.Show();
+			}
+			else
+			{
+				this.pendingUploadsInstance.BringToFront();
+			}
+		}
+
+		private void PendingUploads_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			this.pendingUploadsInstance = null;
 		}
 	}
 }

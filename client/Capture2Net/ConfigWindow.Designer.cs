@@ -56,6 +56,8 @@
 			this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuAbout = new System.Windows.Forms.ToolStripMenuItem();
+			this.CheckUpdatesOnStart = new System.Windows.Forms.CheckBox();
+			this.menuShowPendingUploads = new System.Windows.Forms.ToolStripMenuItem();
 			this.trayIconMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Port)).BeginInit();
 			this.menuBar.SuspendLayout();
@@ -99,7 +101,7 @@
 			// 
 			// Save
 			// 
-			this.Save.Location = new System.Drawing.Point(272, 140);
+			this.Save.Location = new System.Drawing.Point(272, 160);
 			this.Save.Name = "Save";
 			this.Save.Size = new System.Drawing.Size(100, 30);
 			this.Save.TabIndex = 9;
@@ -263,6 +265,7 @@
 			// menuBar
 			// 
 			this.menuBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuShowPendingUploads,
             this.helpMenu});
 			this.menuBar.Location = new System.Drawing.Point(0, 0);
 			this.menuBar.Name = "menuBar";
@@ -282,28 +285,46 @@
 			// menuHelp
 			// 
 			this.menuHelp.Name = "menuHelp";
-			this.menuHelp.Size = new System.Drawing.Size(107, 22);
+			this.menuHelp.Size = new System.Drawing.Size(152, 22);
 			this.menuHelp.Text = "Help";
 			this.menuHelp.Click += new System.EventHandler(this.menuHelp_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(104, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// menuAbout
 			// 
 			this.menuAbout.Name = "menuAbout";
-			this.menuAbout.Size = new System.Drawing.Size(107, 22);
+			this.menuAbout.Size = new System.Drawing.Size(152, 22);
 			this.menuAbout.Text = "About";
 			this.menuAbout.Click += new System.EventHandler(this.menuAbout_Click);
+			// 
+			// CheckUpdatesOnStart
+			// 
+			this.CheckUpdatesOnStart.AutoSize = true;
+			this.CheckUpdatesOnStart.Location = new System.Drawing.Point(15, 177);
+			this.CheckUpdatesOnStart.Name = "CheckUpdatesOnStart";
+			this.CheckUpdatesOnStart.Size = new System.Drawing.Size(151, 17);
+			this.CheckUpdatesOnStart.TabIndex = 22;
+			this.CheckUpdatesOnStart.Text = "Check for updates on start";
+			this.CheckUpdatesOnStart.UseVisualStyleBackColor = true;
+			// 
+			// menuShowPendingUploads
+			// 
+			this.menuShowPendingUploads.Name = "menuShowPendingUploads";
+			this.menuShowPendingUploads.Size = new System.Drawing.Size(109, 20);
+			this.menuShowPendingUploads.Text = "Pending Uploads";
+			this.menuShowPendingUploads.Click += new System.EventHandler(this.menuShowPendingUploads_Click);
 			// 
 			// ConfigWindow
 			// 
 			this.AcceptButton = this.Save;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(384, 182);
+			this.ClientSize = new System.Drawing.Size(384, 202);
+			this.Controls.Add(this.CheckUpdatesOnStart);
 			this.Controls.Add(this.menuBar);
 			this.Controls.Add(this.LimitToOneInstance);
 			this.Controls.Add(this.StartWithWindows);
@@ -365,6 +386,8 @@
   private System.Windows.Forms.ToolStripMenuItem menuHelp;
   private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
   private System.Windows.Forms.ToolStripMenuItem menuAbout;
+  private System.Windows.Forms.CheckBox CheckUpdatesOnStart;
+  private System.Windows.Forms.ToolStripMenuItem menuShowPendingUploads;
  }
 }
 

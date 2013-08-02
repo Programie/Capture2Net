@@ -44,10 +44,13 @@ namespace Capture2Net
 					}
 				}
 
-				var updateCheckInstance = new UpdateCheck();
-				if (updateCheckInstance.DoExit)
+				if (settingsInstance.CheckUpdatesOnStart)
 				{
-					return;
+					var updateCheckInstance = new UpdateCheck();
+					if (updateCheckInstance.DoExit)
+					{
+						return;
+					}
 				}
 
 				var configWindow = new ConfigWindow(parameterManagerInstance, cloudConfigInstance, shortcutsInstance);

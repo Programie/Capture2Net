@@ -124,6 +124,19 @@ namespace Capture2Net
 			}
 		}
 
+		bool checkUpdatesOnStart;
+		public bool CheckUpdatesOnStart
+		{
+			get
+			{
+				return this.checkUpdatesOnStart;
+			}
+			set
+			{
+				this.checkUpdatesOnStart = value;
+			}
+		}
+
 		bool showHiddenBalloonTip;
 		public bool ShowHiddenBalloonTip
 		{
@@ -152,6 +165,7 @@ namespace Capture2Net
 			this.Username = (string)key.GetValue("Username");
 			this.Password = ASCIIEncoding.ASCII.GetString(Convert.FromBase64String((string)key.GetValue("Password", "")));
 			this.LimitToOneInstance = Convert.ToBoolean(key.GetValue("LimitToOneInstance", true));
+			this.CheckUpdatesOnStart = Convert.ToBoolean(key.GetValue("CheckUpdatesOnStart", true));
 			this.ShowHiddenBalloonTip = Convert.ToBoolean(key.GetValue("ShowHiddenBalloonTip", true));
 		}
 
@@ -165,6 +179,7 @@ namespace Capture2Net
 			key.SetValue("Username", this.Username);
 			key.SetValue("Password", Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Password)));
 			key.SetValue("LimitToOneInstance", this.LimitToOneInstance, RegistryValueKind.DWord);
+			key.SetValue("CheckUpdatesOnStart", this.CheckUpdatesOnStart, RegistryValueKind.DWord);
 			key.SetValue("ShowHiddenBalloonTip", this.ShowHiddenBalloonTip, RegistryValueKind.DWord);
 		}
 	}

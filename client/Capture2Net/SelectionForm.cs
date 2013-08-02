@@ -7,17 +7,37 @@ namespace Capture2Net
 {
 	public partial class SelectionForm : Form
 	{
-		bool mouseDown;
-		int startX;
-		int startY;
+		MouseDownType mouseDownType;
+		Point start;
 		public Rectangle cropArea;
+		Rectangle oldCropArea;
 		Image sourceImage;
 
 		public bool accepted;
+
+		Pen pen;
+		SolidBrush dimmingBrush;
+		StringFormat sizeInfoStringFormat;
+
+		enum MouseDownType
+		{
+			None,
+			Draw,
+			Move
+		}
 		
 		public SelectionForm(Image image)
 		{
 			this.sourceImage = image;
+
+			// TODO: Allow user to change colors and pen width
+			this.dimmingBrush = new SolidBrush(Color.FromArgb(50, 0, 0, 0));
+			this.pen = new Pen(Brushes.White, 1);
+
+			this.sizeInfoStringFormat = new StringFormat();
+			this.sizeInfoStringFormat.Alignment = StringAlignment.Center;
+			this.sizeInfoStringFormat.LineAlignment = StringAlignment.Center;
+			
 			InitializeComponent();
 		}
 
@@ -49,9 +69,17 @@ namespace Capture2Net
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
 			{
-				this.startX = e.X;
-				this.startY = e.Y;
-				this.mouseDown = true;
+				if (this.cropArea.Contains(e.X, e.Y))
+				{
+					this.mouseDownType = MouseDownType.Move;
+				}
+				else
+				{
+					this.mouseDownType = MouseDownType.Draw;
+				}
+				
+				this.start.X = e.X;
+				this.start.Y = e.Y;
 			}
 		}
 
@@ -59,30 +87,31 @@ namespace Capture2Net
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
 			{
-				this.mouseDown = false;
+				this.mouseDownType = MouseDownType.None;
+				this.oldCropArea = this.cropArea;
 				this.Invalidate();
 			}
 		}
 
 		private void SelectionForm_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (this.mouseDown)
+			if (this.mouseDownType == MouseDownType.Draw)
 			{
 				int x;
 				int y;
-				int width = Math.Abs(this.startX - e.X);
-				int height = Math.Abs(this.startY - e.Y);
-				if (this.startX < e.X)
+				int width = Math.Abs(this.start.X - e.X);
+				int height = Math.Abs(this.start.Y - e.Y);
+				if (this.start.X < e.X)
 				{
-					x = this.startX;
+					x = this.start.X;
 				}
 				else
 				{
 					x = e.X;
 				}
-				if (this.startY < e.Y)
+				if (this.start.Y < e.Y)
 				{
-					y = this.startY;
+					y = this.start.Y;
 				}
 				else
 				{
@@ -90,6 +119,22 @@ namespace Capture2Net
 				}
 				this.cropArea = new Rectangle(x, y, width, height);
 				this.Invalidate();
+			}
+			else if (this.mouseDownType == MouseDownType.Move)
+			{
+				this.cropArea.Location = new Point(e.X - (this.start.X - this.oldCropArea.Left), e.Y - (this.start.Y - this.oldCropArea.Top));
+				this.Invalidate();
+			}
+			else if (this.mouseDownType == MouseDownType.None)
+			{
+				if (this.cropArea.Contains(e.X, e.Y))
+				{
+					this.Cursor = Cursors.SizeAll;
+				}
+				else
+				{
+					this.Cursor = Cursors.Cross;
+				}
 			}
 		}
 
@@ -101,6 +146,7 @@ namespace Capture2Net
 				this.Close();
 				return true;
 			}
+			
 			if (keyData == Keys.Enter)
 			{
 				if (this.cropArea.Width == 0 || this.cropArea.Height == 0)
@@ -119,16 +165,18 @@ namespace Capture2Net
 					return true;
 				}
 			}
+			
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
 		private void SelectionForm_Paint(object sender, PaintEventArgs e)
 		{
 			e.Graphics.DrawImage(this.sourceImage, 0, 0);
-			var pen = new Pen(Color.Black, 1);
-			pen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
-			e.Graphics.DrawRectangle(pen, this.cropArea);
-			e.Graphics.DrawString(this.cropArea.Width + " x " + this.cropArea.Height, new System.Drawing.Font(FontFamily.GenericSerif, 10), new SolidBrush(Color.Blue), 10, 50);
+			Region outsideRegion = new Region(e.ClipRectangle);
+			outsideRegion.Exclude(this.cropArea);
+			e.Graphics.FillRegion(this.dimmingBrush, outsideRegion);
+			e.Graphics.DrawRectangle(this.pen, this.cropArea);
+			e.Graphics.DrawString(this.cropArea.Width + " x " + this.cropArea.Height, new System.Drawing.Font(FontFamily.GenericSansSerif, 10), new SolidBrush(Color.Blue), this.cropArea, this.sizeInfoStringFormat);
 		}
 	}
 }
