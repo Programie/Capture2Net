@@ -17,7 +17,6 @@ namespace Capture2Net
 		Shortcuts shortcutsInstance;
 		ShortcutInfo shortcutInfoForm;
 		RegistryKey autostartRegistryKey;
-		PendingUploads pendingUploadsInstance;
 
 		public ConfigWindow(ParameterManager parameterManagerInstance, CloudConfig cloudConfigInstance, Shortcuts shortcutsInstance)
 		{
@@ -203,25 +202,6 @@ namespace Capture2Net
 		private void menuAbout_Click(object sender, EventArgs e)
 		{
 			MessageBox.Show("You are currently using version " + Assembly.GetEntryAssembly().GetName().Version.ToString() + " of Capture2Net.", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
-		}
-
-		private void menuShowPendingUploads_Click(object sender, EventArgs e)
-		{
-			if (this.pendingUploadsInstance == null)
-			{
-				this.pendingUploadsInstance = new PendingUploads();
-				this.pendingUploadsInstance.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PendingUploads_FormClosed);
-				this.pendingUploadsInstance.Show();
-			}
-			else
-			{
-				this.pendingUploadsInstance.BringToFront();
-			}
-		}
-
-		private void PendingUploads_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			this.pendingUploadsInstance = null;
 		}
 	}
 }

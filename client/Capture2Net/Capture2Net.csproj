@@ -114,12 +114,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ParameterManager.cs" />
-    <Compile Include="PendingUploads.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PendingUploads.Designer.cs">
-      <DependentUpon>PendingUploads.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -149,9 +143,6 @@
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="ConfigWindow.resx">
       <DependentUpon>ConfigWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PendingUploads.resx">
-      <DependentUpon>PendingUploads.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
